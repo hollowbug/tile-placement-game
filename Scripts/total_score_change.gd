@@ -2,7 +2,7 @@ extends Object
 class_name TotalScoreChange
 
 var change : int = 0
-var tiles : Array[TileScoreChange] = []
+var tiles : Array[TileChange] = []
 var items : Array[ItemScoreChange] = []
 
 func add(other: TotalScoreChange) -> TotalScoreChange:
@@ -11,7 +11,7 @@ func add(other: TotalScoreChange) -> TotalScoreChange:
 	items.append_array(other.items)
 	return self
 
-func add_tile(tile: TileScoreChange) -> void:
+func add_tile(tile: TileChange) -> void:
 	tiles.append(tile)
 	change += tile.total
 	

@@ -232,12 +232,12 @@ func _preview_tile_placement(tile: HabitatTile) -> void:
 	for tile_ in get_all_tiles():
 		for i in range(2):
 			var animal = tile_.data.animal[i]
-			if animal and animal.function:
-				var score_change = animal.function.call(tile_, i)
-				if score_change.total != 0:
-					tile_.show_score(i, score_change.total)
-					_placement_preview.add_tile(score_change)
+			if animal:
+				var score_change = animal.placement_preview(_placement_preview, tile_, tile, i)
 	_update_habitats()
+	for tile_ in _placement_preview.tiles:
+		if tile_.total != 0:
+			tile_.tile.show_score(tile_.animal_idx, tile_.total)
 	score_previewed.emit(tile, _placement_preview)
 
 func _clear_preview() -> void:

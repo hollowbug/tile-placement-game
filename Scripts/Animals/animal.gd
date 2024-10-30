@@ -10,11 +10,11 @@ var categories : Array[int]
 var habitats : Array[int]
 var rarity : int
 var description : String
-var function : Callable
 
 func get_description() -> String:
 	var result = description.replace("<name>", name)
 	result = result.replace("<name_plural>", name_plural)
+	result = result.replace("<when_placed>", "[b]When placed:[/b]")
 	result = Globals.format_string(result)
 	return result
 	
@@ -26,3 +26,9 @@ func get_category_string() -> String:
 
 func has_category(category: int) -> bool:
 	return category in categories
+
+func placement_preview(changes: TotalScoreChange, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+	return TileChange.new(tile, animal_idx)
+	
+func on_tile_placed(tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+	pass

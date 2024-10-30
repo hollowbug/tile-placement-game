@@ -85,7 +85,7 @@ func get_random_tile(max_animals: int = 2) -> Dictionary:
 	}
 
 func get_random_animal(terrain: int) -> Animal:
-	return _animals_weighted[terrain].pick_random()#.copy(false)
+	return _animals_weighted[terrain].pick_random()
 
 func get_random_item() -> Dictionary:
 	var item = _items_weighted.pick_random().copy(false)

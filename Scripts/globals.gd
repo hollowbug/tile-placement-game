@@ -33,8 +33,8 @@ const ANIMAL_RARITY_COSTS = {
 
 var TERRAIN = {
 	TERRAIN_TYPE.GRASS: {
-		name = "[color=lawngreen]Plains[/color]",
-		name_raw = "Plains",
+		name = "[color=lawngreen]Grassland[/color]",
+		name_raw = "Grassland",
 		animals = [],
 		sprite_half = preload("res://Sprites/tile_grass.png"),
 		sprite_full = preload("res://Sprites/tile_grass_full.png"),

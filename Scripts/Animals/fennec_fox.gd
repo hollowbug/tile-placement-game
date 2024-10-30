@@ -2,30 +2,23 @@ extends Animal
 
 func _init():
 	exclude = false
-	name = "Wolf"
-	name_plural = "Wolves"
-	sprite = preload("res://Sprites/wolf.png")
+	name = "Fennec Fox"
+	name_plural = "Fennec Foxes"
+	sprite = preload("res://Sprites/fennec_fox.png")
 	categories = [Globals.ANIMAL_TYPE.PREDATOR]
-	habitats = [Globals.TERRAIN_TYPE.FOREST1]
-	rarity = Globals.RARITY.COMMON
-	description = ("<points=1> per adjacent <name>"
-			+ "\n<points=1> per adjacent <animal_category={0}>"
-			.format([Globals.ANIMAL_TYPE.HERBIVORE]))
-	function = func(tile: HabitatTile, animal_idx: int) -> TileScoreChange:
-		var points = [0]
-		var check_animal = func(animal: Animal) -> void:
-			if animal.name == name:
-				points[0] += 1
-			if animal.has_category(Globals.ANIMAL_TYPE.HERBIVORE):
-				points[0] += 1
-		# Check other animal on this tile
-		var other = tile.data.animal[int(!bool(animal_idx))]
-		if other:
-			check_animal.call(other)
-		# Check adjacent tiles
-		for other_tile in tile.get_neighbors():
+	habitats = [Globals.TERRAIN_TYPE.DESERT]
+	rarity = Globals.RARITY.RARE
+	description = ("<points=3> per different <rarity={0}> animal on the island"
+			.format([Globals.RARITY.RARE]))
+	
+func placement_preview(changes: TotalScoreChange, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+		var points = 0
+		var animal_names = []
+		for tile2 in tile.get_all_tiles():
 			for i in range(2):
-				var animal = other_tile.data.animal[i]
-				if animal:
-					check_animal.call(animal)
-		return TileScoreChange.new(tile, animal_idx, points[0] - tile.animal_score[animal_idx])
+				var animal = tile2.data.animal[i]
+				if animal and animal.rarity == Globals.RARITY.RARE and animal.name not in animal_names:
+					animal_names.append(animal.name)
+					points += 3
+		changes.add_tile(TileChange.new(tile, animal_idx, points - tile.animal_score[animal_idx]))
+

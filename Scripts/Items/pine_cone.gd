@@ -11,7 +11,7 @@ func _init():
 	sprite = preload("res://Sprites/Items/pine_cone.png")
 
 func get_description() -> String:
-	return Globals.format_string("<points=1> per tile in _largest <terrain={0}>"
+	return Globals.format_string("<points=1> per tile in largest <terrain={0}>"
 			.format([Globals.TERRAIN_TYPE.FOREST1]))
 
 func on_island_started(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:

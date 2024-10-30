@@ -11,7 +11,8 @@ func _init():
 	description = (("<points=1> per <animal_category={0}> within 2 tiles"
 			+ "\n <points=-3> per <animal_category={1}> within 2 tiles")
 			.format([Globals.ANIMAL_TYPE.RODENT, Globals.ANIMAL_TYPE.PREDATOR]))
-	function = func(tile: HabitatTile, animal_idx: int) -> TileScoreChange:
+	
+func placement_preview(changes: TotalScoreChange, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = [0]
 		var check_animal = func(animal: Animal) -> void:
 			if animal.has_category(Globals.ANIMAL_TYPE.RODENT):
@@ -28,4 +29,5 @@ func _init():
 				var animal = other_tile.data.animal[i]
 				if animal:
 					check_animal.call(animal)
-		return TileScoreChange.new(tile, animal_idx, points[0] - tile.animal_score[animal_idx])
+		changes.add_tile(TileChange.new(tile, animal_idx, points[0] - tile.animal_score[animal_idx]))
+
