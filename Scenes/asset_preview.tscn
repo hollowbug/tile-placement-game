@@ -1,0 +1,84 @@
+[gd_scene load_steps=17 format=3 uid="uid://lbdj4632wc32"]
+
+[ext_resource type="ArrayMesh" uid="uid://dlrhvs1v2ji3b" path="res://3D/Hex Tiles/Base.obj" id="1_rucb4"]
+[ext_resource type="ArrayMesh" uid="uid://cjil7cqgkp32j" path="res://3D/Hex Tiles/coast.obj" id="2_3pfty"]
+[ext_resource type="ArrayMesh" uid="uid://c46oklfu6sddd" path="res://3D/Hex Tiles/desert mountain.obj" id="3_j7clf"]
+[ext_resource type="ArrayMesh" uid="uid://lkc4xdw6gyhg" path="res://3D/Hex Tiles/Forest.obj" id="4_vbrvv"]
+[ext_resource type="ArrayMesh" uid="uid://cd434im3ec55n" path="res://3D/Hex Tiles/hill.obj" id="5_bjyao"]
+[ext_resource type="ArrayMesh" uid="uid://cuwhvnwhhc6y1" path="res://3D/Hex Tiles/iceberg.obj" id="6_j6sna"]
+[ext_resource type="ArrayMesh" uid="uid://c16oc2wdbtbq7" path="res://3D/Hex Tiles/jungle forest.obj" id="7_g7hpp"]
+[ext_resource type="ArrayMesh" uid="uid://cyfd0uf01q7yr" path="res://3D/Hex Tiles/jungle tree.obj" id="8_x05pk"]
+[ext_resource type="ArrayMesh" uid="uid://4qraj1ahuvl8" path="res://3D/Hex Tiles/lava vent.obj" id="9_yj2iw"]
+[ext_resource type="ArrayMesh" uid="uid://cslojekom55yj" path="res://3D/Hex Tiles/mountain.obj" id="10_xh7ot"]
+[ext_resource type="ArrayMesh" uid="uid://ckjf0cbaec2nt" path="res://3D/Hex Tiles/ocean.obj" id="11_n4ah7"]
+[ext_resource type="ArrayMesh" uid="uid://tlb0rsydogrb" path="res://3D/Hex Tiles/Ore Deposit.obj" id="12_2gtqh"]
+[ext_resource type="ArrayMesh" uid="uid://ciewe4ta0gvmy" path="res://3D/Hex Tiles/Ore_1.obj" id="13_qsemu"]
+[ext_resource type="ArrayMesh" uid="uid://m8ctmw0d5kop" path="res://3D/Hex Tiles/Ore_2.obj" id="14_x7oc3"]
+[ext_resource type="ArrayMesh" uid="uid://vtr0p5bpwv0x" path="res://3D/Hex Tiles/tree.obj" id="15_ixrrk"]
+[ext_resource type="ArrayMesh" uid="uid://chtb2gublrdp2" path="res://3D/Hex Tiles/volcano.obj" id="16_pb3l5"]
+
+[node name="Asset Preview" type="Node3D"]
+
+[node name="Base" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.52277, 1.19209e-07, 0.390308)
+mesh = ExtResource("1_rucb4")
+
+[node name="Coast" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.23731, 0, -1.90373)
+mesh = ExtResource("2_3pfty")
+
+[node name="DesertMountain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.661107, 0, 1.83162)
+mesh = ExtResource("3_j7clf")
+
+[node name="Forest" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.51344, 0, -0.794472)
+mesh = ExtResource("4_vbrvv")
+
+[node name="Hill" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.30931, 0, 0.522958)
+mesh = ExtResource("5_bjyao")
+
+[node name="Iceberg" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.12445, -1.19209e-07, 1.6469)
+mesh = ExtResource("6_j6sna")
+
+[node name="JungleForest" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.768503, 0.0484024, -1.39288)
+mesh = ExtResource("7_g7hpp")
+
+[node name="JungleTree" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.47537, 0, 0.301046)
+mesh = ExtResource("8_x05pk")
+
+[node name="LavaVent" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.5419, 0, -0.394805)
+mesh = ExtResource("9_yj2iw")
+
+[node name="Mountain" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.266591, 0, 0.344857)
+mesh = ExtResource("10_xh7ot")
+
+[node name="Ocean" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.37319, 0, 1.96627)
+mesh = ExtResource("11_n4ah7")
+
+[node name="OreDeposit" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.69376, 0, 1.09051)
+mesh = ExtResource("12_2gtqh")
+
+[node name="Ore1" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.78193, 0, -1.25927)
+mesh = ExtResource("13_qsemu")
+
+[node name="Ore2" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.34393, 0, -0.764894)
+mesh = ExtResource("14_x7oc3")
+
+[node name="Tree" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 1.4763, 0, 2.59622)
+mesh = ExtResource("15_ixrrk")
+
+[node name="Volcano" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.339245, 0, 2.80672)
+mesh = ExtResource("16_pb3l5")

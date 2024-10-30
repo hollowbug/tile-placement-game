@@ -1,0 +1,13 @@
+[gd_scene load_steps=3 format=3 uid="uid://ds0n1qeknhgpn"]
+
+[ext_resource type="StyleBox" uid="uid://dsyrl0kj04g3o" path="res://Resources/style_box_background.tres" id="1_nvcbh"]
+[ext_resource type="Script" path="res://Scripts/slide_in_panel.gd" id="2_mcdth"]
+
+[node name="SlideInPanel" type="PanelContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_styles/panel = ExtResource("1_nvcbh")
+script = ExtResource("2_mcdth")

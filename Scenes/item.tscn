@@ -1,0 +1,106 @@
+[gd_scene load_steps=7 format=3 uid="uid://yxqxujjkjwju"]
+
+[ext_resource type="Texture2D" uid="uid://c2fgpnyowluc1" path="res://Sprites/Items/pound_of_soil.png" id="2_njkua"]
+[ext_resource type="Script" path="res://Scripts/item.gd" id="2_v2gp4"]
+[ext_resource type="StyleBox" uid="uid://b38wvwh6g6qku" path="res://Resources/style_box_hover_card.tres" id="3_qv182"]
+[ext_resource type="Theme" uid="uid://dswhrloqs04nu" path="res://Resources/theme_main.tres" id="4_3f3jg"]
+[ext_resource type="StyleBox" uid="uid://b73ix34l0wxtl" path="res://Resources/style_box_black.tres" id="5_3qyll"]
+[ext_resource type="PackedScene" uid="uid://myciyvy8ekl3" path="res://Scenes/score_preview_panel.tscn" id="6_syw0i"]
+
+[node name="Item" type="Control"]
+custom_minimum_size = Vector2(74, 74)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 74.0
+offset_bottom = 74.0
+pivot_offset = Vector2(37, 37)
+size_flags_horizontal = 4
+script = ExtResource("2_v2gp4")
+selectable = false
+
+[node name="MarginContainer" type="MarginContainer" parent="."]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -37.0
+offset_top = -37.0
+offset_right = 37.0
+offset_bottom = 37.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(55, 55)
+
+[node name="Sprite" type="TextureRect" parent="MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+texture = ExtResource("2_njkua")
+stretch_mode = 3
+
+[node name="Popup" type="PanelContainer" parent="MarginContainer/Sprite"]
+unique_name_in_owner = true
+visible = false
+z_index = 50
+custom_minimum_size = Vector2(300, 0)
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -150.0
+offset_top = 103.0
+offset_right = 150.0
+offset_bottom = 194.0
+grow_horizontal = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_qv182")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Sprite/Popup"]
+layout_mode = 2
+theme = ExtResource("4_3f3jg")
+
+[node name="PanelContainer" type="PanelContainer" parent="MarginContainer/Sprite/Popup/VBoxContainer"]
+layout_mode = 2
+theme_override_styles/panel = ExtResource("5_3qyll")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Sprite/Popup/VBoxContainer/PanelContainer"]
+layout_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="MarginContainer/Sprite/Popup/VBoxContainer/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 0
+
+[node name="Name" type="Label" parent="MarginContainer/Sprite/Popup/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "Item Name"
+horizontal_alignment = 1
+
+[node name="Rarity" type="RichTextLabel" parent="MarginContainer/Sprite/Popup/VBoxContainer/PanelContainer/VBoxContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/normal_font_size = 16
+bbcode_enabled = true
+text = "[center]Common Item"
+fit_content = true
+
+[node name="Description" type="RichTextLabel" parent="MarginContainer/Sprite/Popup/VBoxContainer/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+bbcode_enabled = true
+text = "[center]Item description"
+fit_content = true
+
+[node name="ScoreRect" parent="." instance=ExtResource("6_syw0i")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -23.5
+offset_top = 74.0
+offset_right = 23.5
+offset_bottom = 133.0
+grow_horizontal = 2

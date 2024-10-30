@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://cd434im3ec55n"
+path="res://.godot/imported/hill.obj-587942b576a45176699bc753c3ef2dd2.mesh"
+
+[deps]
+
+files=["res://.godot/imported/hill.obj-587942b576a45176699bc753c3ef2dd2.mesh"]
+
+source_file="res://3D/Hex Tiles/hill.obj"
+dest_files=["res://.godot/imported/hill.obj-587942b576a45176699bc753c3ef2dd2.mesh", "res://.godot/imported/hill.obj-587942b576a45176699bc753c3ef2dd2.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

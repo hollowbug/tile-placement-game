@@ -1,0 +1,45 @@
+[gd_scene load_steps=3 format=3 uid="uid://br3flicjvy2qw"]
+
+[ext_resource type="Script" path="res://Scripts/hover_label.gd" id="1_uxa3s"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_4r2ga"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+bg_color = Color(0, 0, 0, 0.831373)
+corner_radius_top_left = 12
+corner_radius_top_right = 12
+corner_radius_bottom_right = 12
+corner_radius_bottom_left = 12
+
+[node name="Label" type="Label"]
+mouse_filter = 1
+theme_override_font_sizes/font_size = 54
+text = "Sample Text"
+script = ExtResource("1_uxa3s")
+
+[node name="Description" type="PanelContainer" parent="."]
+visible = false
+z_index = 100
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_right = 89.0
+offset_bottom = 40.0
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_4r2ga")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="Description"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Description/HBoxContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_font_sizes/font_size = 20
+text = "Description"
+
+[connection signal="mouse_entered" from="." to="." method="_on_mouse_entered"]
+[connection signal="mouse_exited" from="." to="." method="_on_mouse_exited"]

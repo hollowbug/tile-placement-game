@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://vtr0p5bpwv0x"
+path="res://.godot/imported/tree.obj-29e321cf77d06b593c6136d74d0d55cf.mesh"
+
+[deps]
+
+files=["res://.godot/imported/tree.obj-29e321cf77d06b593c6136d74d0d55cf.mesh"]
+
+source_file="res://3D/Hex Tiles/tree.obj"
+dest_files=["res://.godot/imported/tree.obj-29e321cf77d06b593c6136d74d0d55cf.mesh", "res://.godot/imported/tree.obj-29e321cf77d06b593c6136d74d0d55cf.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

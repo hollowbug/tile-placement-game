@@ -1,0 +1,22 @@
+[remap]
+
+importer="wavefront_obj"
+importer_version=1
+type="Mesh"
+uid="uid://dlrhvs1v2ji3b"
+path="res://.godot/imported/Base.obj-87091053faa4bf388901b69b2d6ab0da.mesh"
+
+[deps]
+
+files=["res://.godot/imported/Base.obj-87091053faa4bf388901b69b2d6ab0da.mesh"]
+
+source_file="res://3D/Hex Tiles/Base.obj"
+dest_files=["res://.godot/imported/Base.obj-87091053faa4bf388901b69b2d6ab0da.mesh", "res://.godot/imported/Base.obj-87091053faa4bf388901b69b2d6ab0da.mesh"]
+
+[params]
+
+generate_tangents=true
+scale_mesh=Vector3(1, 1, 1)
+offset_mesh=Vector3(0, 0, 0)
+optimize_mesh=true
+force_disable_mesh_compression=false

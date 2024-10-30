@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgs03ytfanrbj"]
+
+[ext_resource type="Script" path="res://Scripts/available_cell.gd" id="1_k58mp"]
+[ext_resource type="PackedScene" uid="uid://bcf8x74bnrmvp" path="res://3D/rock_base.glb" id="2_n4bg7"]
+
+[node name="AvailableCell" type="Node3D" groups=["Available Cells"]]
+script = ExtResource("1_k58mp")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="StaticBody3D"]
+transform = Transform3D(1.12, 0, 0, 0, 1.12, 0, 0, 0, 1.12, 0, 0, 0)
+depth = 0.0
+polygon = PackedVector2Array(-0.25, -0.433, 0.25, -0.433, 0.5, 0, 0.25, 0.433, -0.25, 0.433, -0.5, 0)
+
+[node name="rock_base" parent="." instance=ExtResource("2_n4bg7")]
+
+[connection signal="input_event" from="StaticBody3D" to="." method="_on_static_body_3d_input_event"]
+[connection signal="mouse_entered" from="StaticBody3D" to="." method="_on_static_body_3d_mouse_entered"]
+[connection signal="mouse_exited" from="StaticBody3D" to="." method="_on_static_body_3d_mouse_exited"]

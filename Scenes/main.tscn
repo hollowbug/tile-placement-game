@@ -1,0 +1,447 @@
+[gd_scene load_steps=19 format=3 uid="uid://b22t40lyxj0ku"]
+
+[ext_resource type="Script" path="res://Scripts/game_controller.gd" id="1_bnu0l"]
+[ext_resource type="Script" path="res://Scripts/hex_grid.gd" id="1_ng7jk"]
+[ext_resource type="Script" path="res://Scripts/rotating_light.gd" id="3_8lew3"]
+[ext_resource type="PackedScene" uid="uid://ds0n1qeknhgpn" path="res://Scenes/slide_in_panel.tscn" id="5_pu8xg"]
+[ext_resource type="Script" path="res://Scripts/dynamic_container.gd" id="5_rh1en"]
+[ext_resource type="Texture2D" uid="uid://secuk4g411we" path="res://Sprites/deck_default.png" id="6_wt4c2"]
+[ext_resource type="Script" path="res://Scripts/clickable_control.gd" id="7_lholp"]
+[ext_resource type="Theme" uid="uid://dswhrloqs04nu" path="res://Resources/theme_main.tres" id="7_tdofo"]
+[ext_resource type="Texture2D" uid="uid://b3yqce4e1p1mx" path="res://Sprites/circle.png" id="8_4ngua"]
+[ext_resource type="StyleBox" uid="uid://dxlkq3f0tp5xh" path="res://Resources/style_box_central.tres" id="8_74aop"]
+[ext_resource type="PackedScene" uid="uid://br3flicjvy2qw" path="res://Scenes/hover_label.tscn" id="8_u3qaw"]
+[ext_resource type="PackedScene" uid="uid://b2lvi6ttgi602" path="res://Scenes/button_1.tscn" id="9_m750k"]
+[ext_resource type="PackedScene" uid="uid://fwdutf4ko1yy" path="res://Scenes/deck_viewer.tscn" id="10_608m5"]
+[ext_resource type="PackedScene" uid="uid://b88e1l6d8ovwe" path="res://Scenes/shop.tscn" id="12_5lv3s"]
+[ext_resource type="FontFile" uid="uid://bwkca31k63u50" path="res://Resources/Agdasima-Regular.ttf" id="13_xnq6a"]
+
+[sub_resource type="Environment" id="Environment_oi4er"]
+background_mode = 1
+background_color = Color(0.647059, 0.729412, 1, 1)
+ambient_light_color = Color(0.670588, 0.780392, 1, 1)
+ambient_light_sky_contribution = 0.0
+reflected_light_source = 2
+fog_enabled = true
+fog_light_color = Color(0.462745, 0.556863, 0.686275, 1)
+fog_density = 0.0
+fog_height_density = 2.0
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_uw0sm"]
+content_margin_left = 16.0
+content_margin_top = 8.0
+content_margin_right = 16.0
+content_margin_bottom = 8.0
+bg_color = Color(1, 0.760784, 0, 1)
+corner_radius_top_right = 16
+corner_radius_bottom_right = 16
+
+[sub_resource type="LabelSettings" id="LabelSettings_mtf6m"]
+font = ExtResource("13_xnq6a")
+font_size = 64
+font_color = Color(0, 0, 0, 1)
+
+[node name="Main" type="Node3D"]
+script = ExtResource("1_bnu0l")
+
+[node name="CameraFocalPoint" type="Node3D" parent="."]
+unique_name_in_owner = true
+transform = Transform3D(0.955793, 0.141655, -0.25767, 0, 0.876307, 0.481754, 0.29404, -0.460457, 0.837568, 0, 0, 0)
+
+[node name="Camera3D" type="Camera3D" parent="CameraFocalPoint"]
+transform = Transform3D(1, 0, 0, 0, 0.85793, 0.513766, 0, -0.513766, 0.85793, 0, 1.99193, 3.00281)
+current = true
+size = 5.0
+far = 30.0
+
+[node name="HexGrid" type="Node3D" parent="."]
+script = ExtResource("1_ng7jk")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(-0.0602872, 0.838229, -0.541976, 0.82257, 0.349303, 0.448738, 0.565459, -0.41876, -0.710561, 0, 1.06631, 0)
+light_energy = 1.7
+shadow_enabled = true
+directional_shadow_blend_splits = true
+script = ExtResource("3_8lew3")
+rotation_speed = 0.002
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_oi4er")
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="MarginContainer2" type="MarginContainer" parent="HUD"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="CenterContainer" type="CenterContainer" parent="HUD/MarginContainer2"]
+layout_mode = 2
+size_flags_vertical = 8
+
+[node name="HandTiles" type="Container" parent="HUD/MarginContainer2/CenterContainer"]
+unique_name_in_owner = true
+z_index = -5
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+script = ExtResource("5_rh1en")
+max_size = 550.0
+
+[node name="SlideInPanel" parent="HUD" instance=ExtResource("5_pu8xg")]
+unique_name_in_owner = true
+visible = false
+
+[node name="Shop" parent="HUD/SlideInPanel" instance=ExtResource("12_5lv3s")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="Money" type="PanelContainer" parent="HUD"]
+unique_name_in_owner = true
+offset_top = 264.0
+offset_right = 87.0
+offset_bottom = 358.0
+size_flags_horizontal = 0
+size_flags_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_uw0sm")
+script = ExtResource("7_lholp")
+
+[node name="LabelMoney" type="Label" parent="HUD/Money"]
+unique_name_in_owner = true
+layout_mode = 2
+text = "$0"
+label_settings = SubResource("LabelSettings_mtf6m")
+
+[node name="SummaryPanel" parent="HUD" instance=ExtResource("5_pu8xg")]
+unique_name_in_owner = true
+visible = false
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -40.0
+offset_top = -60.0
+offset_right = 40.0
+offset_bottom = 60.0
+theme = ExtResource("7_tdofo")
+theme_type_variation = &"CentralPanel"
+theme_override_styles/panel = ExtResource("8_74aop")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/SummaryPanel"]
+layout_mode = 2
+
+[node name="Title" type="Label" parent="HUD/SummaryPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_font_sizes/font_size = 80
+text = "Island Complete!"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="HUD/SummaryPanel/VBoxContainer"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Rewards" type="VBoxContainer" parent="HUD/SummaryPanel/VBoxContainer"]
+layout_mode = 2
+
+[node name="Base" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards"]
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards/Base"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(208, 37)
+
+[node name="Label" type="Label" parent="HUD/SummaryPanel/VBoxContainer/Rewards/Base/Control"]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.5
+offset_right = 406.0
+offset_bottom = 32.5
+grow_vertical = 2
+theme_override_font_sizes/font_size = 54
+text = "Reward"
+
+[node name="Label2" type="Label" parent="HUD/SummaryPanel/VBoxContainer/Rewards/Base/Control"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -406.0
+offset_top = -32.5
+offset_bottom = 32.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 54
+text = "$5"
+horizontal_alignment = 2
+
+[node name="ScoreBonus" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards"]
+visible = false
+custom_minimum_size = Vector2(0, 75)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards/ScoreBonus"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(208, 37)
+
+[node name="Label" parent="HUD/SummaryPanel/VBoxContainer/Rewards/ScoreBonus/Control" instance=ExtResource("8_u3qaw")]
+layout_mode = 1
+anchors_preset = 4
+anchor_top = 0.5
+anchor_bottom = 0.5
+offset_top = -32.5
+offset_right = 406.0
+offset_bottom = 32.5
+grow_vertical = 2
+text = "Score Bonus"
+description = "Earn bonus money equal to score divided by required score (up to $5)."
+
+[node name="Label2" type="Label" parent="HUD/SummaryPanel/VBoxContainer/Rewards/ScoreBonus/Control"]
+layout_mode = 1
+anchors_preset = 6
+anchor_left = 1.0
+anchor_top = 0.5
+anchor_right = 1.0
+anchor_bottom = 0.5
+offset_left = -406.0
+offset_top = -32.5
+offset_bottom = 32.5
+grow_horizontal = 0
+grow_vertical = 2
+theme_override_font_sizes/font_size = 54
+text = "$0"
+horizontal_alignment = 2
+
+[node name="Spacer2" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards"]
+custom_minimum_size = Vector2(0, 30)
+layout_mode = 2
+
+[node name="Total" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards"]
+custom_minimum_size = Vector2(0, 76)
+layout_mode = 2
+
+[node name="Control" type="Control" parent="HUD/SummaryPanel/VBoxContainer/Rewards/Total"]
+anchors_preset = 0
+offset_right = 416.0
+offset_bottom = 76.0
+pivot_offset = Vector2(208, 38)
+
+[node name="Label" type="Label" parent="HUD/SummaryPanel/VBoxContainer/Rewards/Total/Control"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -208.0
+offset_top = -38.0
+offset_right = 208.0
+offset_bottom = 38.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_font_sizes/font_size = 64
+text = "Total $5"
+horizontal_alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/SummaryPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" parent="HUD/SummaryPanel/VBoxContainer/HBoxContainer" instance=ExtResource("9_m750k")]
+layout_mode = 2
+text = "Continue"
+
+[node name="Deck" type="Control" parent="HUD"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -107.0
+offset_top = -90.0
+offset_right = -67.0
+offset_bottom = -50.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource("7_lholp")
+selectable = false
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Deck"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -165.5
+offset_top = -87.5
+offset_right = 165.5
+offset_bottom = 87.5
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.7, 0.7)
+texture = ExtResource("6_wt4c2")
+
+[node name="TextureRect" type="TextureRect" parent="HUD/Deck/TextureRect"]
+self_modulate = Color(0, 0, 0, 1)
+layout_mode = 0
+offset_left = 60.0
+offset_top = 100.0
+offset_right = 160.0
+offset_bottom = 200.0
+texture = ExtResource("8_4ngua")
+
+[node name="LabelDeckSize" type="Label" parent="HUD/Deck/TextureRect/TextureRect"]
+unique_name_in_owner = true
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -35.5
+offset_right = 20.0
+offset_bottom = 35.5
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("7_tdofo")
+theme_override_font_sizes/font_size = 70
+text = "1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="DeckViewer" parent="HUD" instance=ExtResource("10_608m5")]
+unique_name_in_owner = true
+visible = false
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD"]
+anchors_preset = 10
+anchor_right = 1.0
+offset_bottom = 241.0
+grow_horizontal = 2
+theme_override_constants/margin_left = 32
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_right = 32
+theme_override_constants/margin_bottom = 32
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer"]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="HUD/MarginContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="HSplitContainer" type="HSplitContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer"]
+layout_mode = 2
+dragger_visibility = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="IslandPanel" type="PanelContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme = ExtResource("7_tdofo")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel"]
+layout_mode = 2
+theme_override_constants/separation = 20
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="LabelIsland" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer3"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("7_tdofo")
+theme_override_font_sizes/font_size = 54
+text = "Island 1"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer"]
+layout_mode = 2
+theme = ExtResource("7_tdofo")
+
+[node name="Label" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_vertical = 6
+theme = ExtResource("7_tdofo")
+theme_override_font_sizes/font_size = 40
+text = "Score"
+horizontal_alignment = 1
+
+[node name="Spacer" type="Control" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="LabelScore" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("7_tdofo")
+theme_override_font_sizes/font_size = 40
+text = "0/15"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Items" type="HFlowContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 0
+size_flags_stretch_ratio = 0.0
+
+[node name="Spacer" type="Control" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="ScorePreview" type="PanelContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 0
+
+[node name="LabelScorePreview" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/ScorePreview"]
+unique_name_in_owner = true
+layout_mode = 2
+theme = ExtResource("7_tdofo")
+theme_override_font_sizes/font_size = 40
+text = "+3"
+horizontal_alignment = 1
+
+[connection signal="score_changed" from="HexGrid" to="." method="_on_hex_grid_score_changed"]
+[connection signal="score_preview_ended" from="HexGrid" to="." method="_on_hex_grid_score_preview_ended"]
+[connection signal="score_previewed" from="HexGrid" to="." method="_on_hex_grid_score_previewed"]
+[connection signal="tile_placed" from="HexGrid" to="." method="_on_hex_grid_tile_placed"]
+[connection signal="pressed" from="HUD/SummaryPanel/VBoxContainer/HBoxContainer/Button" to="." method="_on_summary_closed"]
+[connection signal="control_clicked" from="HUD/Deck" to="." method="_on_deck_clicked"]
+[connection signal="closed" from="HUD/DeckViewer" to="." method="_on_deck_viewer_closed"]

@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://cu46a2xri4cli"]
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_tmr6f"]
+content_margin_left = 16.0
+content_margin_top = 16.0
+content_margin_right = 16.0
+content_margin_bottom = 16.0
+bg_color = Color(0, 0, 0, 0.207843)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="ShopContainer" type="PanelContainer"]
+custom_minimum_size = Vector2(600, 250)
+offset_left = 568.0
+offset_right = 600.0
+offset_bottom = 250.0
+theme_override_styles/panel = SubResource("StyleBoxFlat_tmr6f")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+layout_mode = 2
+alignment = 1
+
+[node name="FlowContainer" type="FlowContainer" parent="HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/h_separation = 12
+theme_override_constants/v_separation = 12
+alignment = 1

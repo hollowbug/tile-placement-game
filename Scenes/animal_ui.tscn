@@ -1,0 +1,19 @@
+[gd_scene load_steps=3 format=3 uid="uid://c1jki5oeny2wu"]
+
+[ext_resource type="Script" path="res://Scripts/3d_control.gd" id="1_8rbe3"]
+[ext_resource type="PackedScene" uid="uid://myciyvy8ekl3" path="res://Scenes/score_preview_panel.tscn" id="2_4ed55"]
+
+[node name="AnimalUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+scale = Vector2(0.5, 0.5)
+mouse_filter = 1
+script = ExtResource("1_8rbe3")
+
+[node name="ScoreRect" parent="." instance=ExtResource("2_4ed55")]
+visible = false
+layout_mode = 0
+offset_left = -33.0
+offset_right = 33.0
+offset_bottom = 77.0
+pivot_offset = Vector2(33, 34.5)

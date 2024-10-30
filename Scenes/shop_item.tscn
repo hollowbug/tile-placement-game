@@ -1,0 +1,14 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdohmie2t2tpb"]
+
+[ext_resource type="Script" path="res://Scripts/shop_item.gd" id="1_deirm"]
+[ext_resource type="PackedScene" uid="uid://b2lvi6ttgi602" path="res://Scenes/button_1.tscn" id="2_tsrau"]
+
+[node name="ShopItem" type="VBoxContainer"]
+custom_minimum_size = Vector2(180, 242)
+alignment = 1
+script = ExtResource("1_deirm")
+
+[node name="Button" parent="." instance=ExtResource("2_tsrau")]
+layout_mode = 2
+size_flags_horizontal = 4
+text = "$5"
