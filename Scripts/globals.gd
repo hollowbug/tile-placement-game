@@ -1,8 +1,6 @@
 extends Node
 
 const CELL_SIZE := 1.0 / sqrt(3)
-const NUM_TERRAIN_TYPES := 5
-const NUM_ANIMAL_TYPES := 5
 enum TERRAIN_TYPE {GRASS, WATER, FOREST1, JUNGLE, DESERT}
 enum ANIMAL_TYPE {BIRD, HERBIVORE, PREDATOR, REPTILE, RODENT}
 var ANIMAL: Array[Animal] = []
@@ -131,7 +129,7 @@ func get_animal(name_: String) -> Animal:
 		if animal.name == name_:
 			return animal
 	return null
-	
+
 func format_string(string: String) -> String:
 	var split = split_string(string)
 	var result = ""

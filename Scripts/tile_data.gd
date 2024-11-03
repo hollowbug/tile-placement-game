@@ -34,6 +34,7 @@ func get_animal_name(animal_idx: int) -> String:
 
 func get_animal_description(animal_idx: int) -> String:
 	if animal[animal_idx] and animal[animal_idx].description:
-		return animal[animal_idx].get_description().replace("<this_terrain>",
+		var string = animal[animal_idx].get_description().replace("<this_terrain>",
 				"<terrain={0}>".format([terrain[animal_idx]]))
+		return Globals.format_string(string)
 	return ""

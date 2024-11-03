@@ -1,7 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://bcf1skxk6vull"]
+[gd_scene load_steps=8 format=3 uid="uid://bcf1skxk6vull"]
 
 [ext_resource type="PackedScene" uid="uid://7s70i7qjsn0b" path="res://3D/animal_token.glb" id="1_oh266"]
 [ext_resource type="Texture2D" uid="uid://b3yqce4e1p1mx" path="res://Sprites/circle.png" id="2_8ulpd"]
+[ext_resource type="PackedScene" uid="uid://dwgvwe65subgl" path="res://3D/animal_token_x.glb" id="3_sul4j"]
+[ext_resource type="PackedScene" uid="uid://lax3nd474odr" path="res://Scenes/animal_token_plus.tscn" id="4_w2hig"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_87cql"]
 albedo_texture = ExtResource("2_8ulpd")
@@ -45,3 +47,10 @@ transform = Transform3D(0.956305, 0, -0.292372, 0, 1, 0, 0.292372, 0, 0.956305, 
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.031, 0)
 mesh = SubResource("ArrayMesh_mq4t5")
 skeleton = NodePath("")
+
+[node name="RemoveAnimal" parent="." instance=ExtResource("3_sul4j")]
+visible = false
+
+[node name="AddAnimal" parent="." instance=ExtResource("4_w2hig")]
+transform = Transform3D(0.353553, 0, 0.353553, 0, 0.5, 0, -0.353553, 0, 0.353553, 0.142944, 0.0377474, -0.000774376)
+visible = false

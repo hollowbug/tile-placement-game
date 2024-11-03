@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.UNCOMMON
 	description = "<points=5> if this <this_terrain> has at least 4 tiles and no other <name_plural>"
 	
-func placement_preview(changes: TotalScoreChange, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var habitat = tile.get_habitat(tile.data.terrain[animal_idx])
 		if habitat.size() < 4:
 			return TileChange.new(tile, animal_idx, -tile.animal_score[animal_idx])
@@ -18,7 +18,10 @@ func placement_preview(changes: TotalScoreChange, tile: HabitatTile, _placed_til
 			if tile == other_tile:
 				continue
 			for i in range(2):
-				if other_tile.data.animal[i].name == name and other_tile.data.terrain[i] == tile.data.terrain[i]:
+				var animal = other_tile.preview_animals[i]
+				if other_tile.data.terrain[i] == tile.data.terrain[i] and (
+					animal.name == name or animal.name == "Chameleon"
+				):
 					return TileChange.new(tile, animal_idx, -tile.animal_score[animal_idx])
 		changes.add_tile(TileChange.new(tile, animal_idx, 5 - tile.animal_score[animal_idx]))
 

@@ -19,7 +19,6 @@ anchors_preset = 0
 offset_right = 40.0
 offset_bottom = 40.0
 pivot_offset = Vector2(90, 77)
-mouse_filter = 1
 script = ExtResource("1_2536e")
 selectable = null
 

@@ -3,8 +3,8 @@ extends ItemData
 var _plains : int
 var _preview_plains : int
 
-func _init():
-	super(-1)
+func _init(id_: int):
+	super(id_)
 	exclude = false
 	name = "Grass"
 	rarity = Globals.RARITY.COMMON
@@ -14,19 +14,19 @@ func get_description() -> String:
 	return Globals.format_string("<points=1> per <terrain={0}> tile on the edge of the island"
 			.format([Globals.TERRAIN_TYPE.GRASS]))
 
-func on_island_started(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func on_island_started(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_plains = 0
 	_score(item, hex_grid, change)
 	_plains = _preview_plains
 
-func on_placement_previewed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_placement_previewed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_preview_plains = 0
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_tile_placed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_plains = _preview_plains
 
-func _score(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func _score(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_preview_plains = 0
 	for tile in hex_grid.get_all_tiles():
 		var neighbors = hex_grid.get_neighbors(tile, true)

@@ -7,13 +7,13 @@ static func _static_init():
 	var dirname = "res://Scripts/Items"
 	var files = Globals.list_files_in_folder(dirname)
 	for fname in files:
-		var item = load(dirname.path_join(fname)).new()
+		var item = load(dirname.path_join(fname)).new(-1)
 		if item.exclude == false:
 			ITEMS.append(item)
 
 static func get_item(name: String) -> ItemData:
 	for item in ITEMS:
 		if item.name == name:
-			return item.duplicate(true)
+			return item.get_script().new(-1)
 	print("Item not found: ", name)
 	return null

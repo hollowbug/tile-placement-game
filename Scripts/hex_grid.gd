@@ -2,7 +2,7 @@ extends Node3D
 class_name HexGrid
 
 signal tile_placed(tile: HabitatTile)
-signal score_previewed(tile: HabitatTile, change: TotalScoreChange)
+signal score_previewed(tile: HabitatTile, change: TileChanges)
 signal score_preview_ended
 signal score_changed(change: int)
 
@@ -20,7 +20,7 @@ var _grid : Dictionary
 var _base_tiles: Array[Tile]
 var _current_tile: HabitatTile
 var _hovered_available_cell: Tile
-var _placement_preview: TotalScoreChange
+var _placement_preview: TileChanges
 
 ###
 # OVERRIDE FUNCTIONS
@@ -37,14 +37,20 @@ func _unhandled_input(event) -> void:
 ###
 	
 func set_current_tile(tile: TileData_) -> void:
-	if _current_tile:
-		_current_tile.queue_free()
-		_current_tile = null
+	unset_current_tile()
 	if tile:
 		_current_tile = _create_habitat_tile(tile)
 		#_current_tile.set_material(_INVALID_PLACE_OVERRIDE_MATERIAL)
 		_current_tile.enable_colliders(false)
-		_current_tile.hide_()
+		if _hovered_available_cell:
+			_preview_tile_placement(_hovered_available_cell, _current_tile)
+		else:
+			_current_tile.hide_()
+
+func unset_current_tile() -> void:
+	if _current_tile:
+		_current_tile.queue_free()
+		_current_tile = null
 
 func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> void:
 	# NOTE: WILL HANG IF EMPTY SLOTS + STARTING TILES IS OVER 15;
@@ -175,6 +181,21 @@ func get_tiles_in_range(tile: Tile, range: int,
 			result.append(tile2)
 	return result
 
+func get_tiles_in_direction(tile: Tile, direction: int, stop_at_empty: bool = false,
+		include_empty_cells: bool = false) -> Array[Tile]:
+	var result: Array[Tile] = []
+	var position = tile.coordinates
+	while true:
+		position = _axial_neighbor(position, direction)
+		var tile2 = get_cell(position)
+		if !tile2:
+			break
+		if !tile2.is_empty_slot or include_empty_cells:
+			result.append(tile2)
+		elif stop_at_empty:
+			break
+	return result
+
 func _update_habitats() -> void:
 	#print("Getting all habitats:")
 	habitats = []
@@ -210,7 +231,8 @@ func _place_tile(object : Tile) -> void:
 		if _placement_preview:
 			score_changed.emit(_placement_preview.change)
 			for preview in _placement_preview.tiles:
-				preview.tile.animal_score[preview.animal_idx] += preview.total
+				preview.tile.animal_score[preview.animal_idx] += preview.score_change
+				preview.tile.commit_animal_preview()
 			_clear_preview()
 		tile_placed.emit(_current_tile)
 		_current_tile = null
@@ -223,22 +245,35 @@ func _rotate_current_tile(steps_cw: int):
 		_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _hovered_available_cell
 		_clear_preview()
 		_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _current_tile
-		_preview_tile_placement(_current_tile)
+		_preview_tile_placement(_hovered_available_cell, _current_tile)
 
-func _preview_tile_placement(tile: HabitatTile) -> void:
+func _preview_tile_placement(empty_slot: Tile, tile: HabitatTile) -> void:
+	tile.position = empty_slot.position
+	tile.coordinates = empty_slot.coordinates
+	tile.show_()
+	_grid[empty_slot.coordinates.x][empty_slot.coordinates.y] = tile
 	var neighbors = get_neighbors(tile)
 	tile.preview_placement(neighbors)
-	_placement_preview = TotalScoreChange.new()
+	_placement_preview = TileChanges.new()
+	
+	# Animal effects, such as removing other animals
 	for tile_ in get_all_tiles():
 		for i in range(2):
-			var animal = tile_.data.animal[i]
+			var animal = tile_.preview_animals[i]
 			if animal:
-				var score_change = animal.placement_preview(_placement_preview, tile_, tile, i)
+				animal.placement_preview(_placement_preview, tile_, tile, i)
 	_update_habitats()
-	for tile_ in _placement_preview.tiles:
-		if tile_.total != 0:
-			tile_.tile.show_score(tile_.animal_idx, tile_.total)
+	
+	# Animal scoring, after effects are applied
+	for tile_ in get_all_tiles():
+		for i in range(2):
+			var animal = tile_.preview_animals[i]
+			if animal:
+				animal.calculate_score(_placement_preview, tile_, tile, i)
+	
 	score_previewed.emit(tile, _placement_preview)
+	for tile_ in _placement_preview.tiles:
+		tile_.tile.show_animal_preview(tile_)
 
 func _clear_preview() -> void:
 	score_preview_ended.emit()
@@ -253,11 +288,7 @@ func _on_available_cell_mouse_entered(tile: Tile) -> void:
 	if tile.is_in_group("Available Cells"):
 		_hovered_available_cell = tile
 		if _current_tile:
-			_current_tile.position = tile.position
-			_current_tile.coordinates = tile.coordinates
-			_current_tile.show_()
-			_grid[tile.coordinates.x][tile.coordinates.y] = _current_tile
-			_preview_tile_placement(_current_tile)
+			_preview_tile_placement(tile, _current_tile)
 
 func _on_available_cell_mouse_exited(tile: Tile) -> void:
 	_hovered_available_cell = null

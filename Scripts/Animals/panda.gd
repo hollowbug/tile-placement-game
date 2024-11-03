@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.COMMON
 	description = "<points=1> per tile in this <this_terrain>"
 	
-func placement_preview(changes: TotalScoreChange, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = 0
 		for other_tile in tile.get_habitat(tile.data.terrain[animal_idx]):
 			if (other_tile.data.terrain[0] == tile.data.terrain[animal_idx]):

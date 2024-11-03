@@ -1,9 +1,9 @@
-extends ScoreChange
+extends Resource
 class_name ItemScoreChange
 
 var item : Item
+var score_change : int
 
-func _init(item_: Item, inc: int = 0, dec: int = 0) -> void:
+func _init(item_: Item, score_change_: int) -> void:
 	item = item_
-	increase = inc
-	decrease = dec
+	score_change = score_change_

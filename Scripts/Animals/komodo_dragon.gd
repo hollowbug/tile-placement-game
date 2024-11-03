@@ -9,8 +9,8 @@ func _init():
 	habitats = [Globals.TERRAIN_TYPE.GRASS]
 	rarity = Globals.RARITY.COMMON
 	description = "<when_placed> <points=1> per empty tile on the island"
-	
-func placement_preview(changes: TotalScoreChange, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+
+func calculate_score(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	if tile != placed_tile:
 		return
 	var points = 0

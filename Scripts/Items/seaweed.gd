@@ -3,8 +3,8 @@ extends ItemData
 var _waters : int
 var _preview_waters : int
 
-func _init():
-	super(-1)
+func _init(id_: int):
+	super(id_)
 	exclude = false
 	name = "Seaweed"
 	rarity = Globals.RARITY.COMMON
@@ -14,19 +14,19 @@ func get_description() -> String:
 	return Globals.format_string("<points=1> per <terrain={0}> tile with no animal"
 			.format([Globals.TERRAIN_TYPE.WATER]))
 
-func on_island_started(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func on_island_started(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_waters = 0
 	_score(item, hex_grid, change)
 	_waters = _preview_waters
 
-func on_placement_previewed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_placement_previewed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_preview_waters = 0
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_tile_placed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_waters = _preview_waters
 
-func _score(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func _score(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_preview_waters = 0
 	for tile in hex_grid.get_all_tiles():
 		if tile.data.terrain[0] == Globals.TERRAIN_TYPE.WATER and !tile.data.animal[0]:

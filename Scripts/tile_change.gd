@@ -1,13 +1,13 @@
-extends ScoreChange
+extends Resource
 class_name TileChange
 
 var tile : HabitatTile
 var animal_idx : int
-var animal_removed := false
-var animal_added : Animal
+#var animal_removed := false
+#var animal_added := false
+var score_change : int
 
-func _init(tile_: HabitatTile, animal_idx_: int, inc: int = 0, dec: int = 0) -> void:
+func _init(tile_: HabitatTile, animal_idx_: int, score_change_: int = 0) -> void:
 	tile = tile_
 	animal_idx = animal_idx_
-	increase = inc
-	decrease = dec
+	score_change = score_change_

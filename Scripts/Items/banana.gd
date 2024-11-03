@@ -3,8 +3,8 @@ extends ItemData
 var _jungles : int
 var _preview_jungles : int
 
-func _init():
-	super(-1)
+func _init(id_: int):
+	super(id_)
 	exclude = false
 	name = "Banana"
 	rarity = Globals.RARITY.COMMON
@@ -14,18 +14,18 @@ func get_description() -> String:
 	return Globals.format_string("<points=2> per <terrain={0}> with at least 2 tiles"
 			.format([Globals.TERRAIN_TYPE.JUNGLE]))
 
-func on_island_started(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func on_island_started(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_jungles = 0
 	_score(item, hex_grid, change)
 	_jungles = _preview_jungles
 
-func on_placement_previewed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_placement_previewed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: TotalScoreChange) -> void:
+func on_tile_placed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
 	_jungles = _preview_jungles
 
-func _score(item: Item, hex_grid: HexGrid, change: TotalScoreChange) -> void:
+func _score(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
 	_preview_jungles = 0
 	for habitat in hex_grid.habitats:
 		if habitat.terrain == Globals.TERRAIN_TYPE.JUNGLE and habitat.tiles.size() >= 2:

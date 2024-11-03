@@ -13,7 +13,7 @@ var _state : String:
 			_island_panel.modulate.a = 0.0
 		_deck_viewer.island_mode = value == "island"
 
-var _money := 100:
+var _money := 50:
 	set(value):
 		_money = value
 		_money_node.pop_effect()
@@ -79,7 +79,7 @@ func _next_island() -> void:
 	var starting_tiles: Array[TileData_] = []
 	for i in range(num_starting_tiles):
 		starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(4, starting_tiles)
+	_hex_grid.create_island(10, starting_tiles)
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
 	_current_deck = []
@@ -95,13 +95,13 @@ func _next_island() -> void:
 	_state = "island"
 	_waiting = true
 	await get_tree().create_timer(0.5).timeout
-	var change = TotalScoreChange.new()
+	var change = TileChanges.new()
 	for item in _items:
 		item.data.on_island_started(item, _hex_grid, change)
 	for item in change.items:
-		_score += item.total
+		_score += item.score_change
 		_update_score()
-		await item.item.show_score(item.total, false)
+		await item.item.show_score(item.score_change, false)
 	_waiting = false
 	for i in range(_run.hand_size):
 		_draw_tile()
@@ -142,6 +142,16 @@ func _draw_tile() -> void:
 func _unselect_tile() -> void:
 	_selected_hand_tile = null
 	_hex_grid.set_current_tile(null)
+
+func _show_score_preview(change: int) -> void:
+	if change > 0:
+		_score_preview.self_modulate = Color.GREEN
+	elif change < 0:
+		_score_preview.self_modulate = Color.RED
+	else:
+		_score_preview.self_modulate = Color.WHITE
+	var string = "+" + str(change) if change > -1 else str(change)
+	_labels.score_preview.set_text(string)
 
 func _update_score() -> void:
 	_labels.score.set_text(str(_score) + "/" + str(_run.required_score))
@@ -210,7 +220,6 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	tile.global_position = pos
 	tile.z_index = 50
 	var tween = create_tween().set_parallel()
-	#var visual_tile = tile.get_node("Tile")
 	tween.tween_property(tile, "global_position", _deck_button.global_position, 0.1)
 	tween.tween_property(tile, "scale", Vector2(), 0.1)
 	await tween.finished
@@ -223,6 +232,29 @@ func _add_item(item: ItemData) -> void:
 	_item_container.add_child(node)
 	node.set_data(item)
 	_items.append(node)
+	_run.add_item(item)
+
+func _add_item_from_shop(item: Item) -> void:
+	_items.append(item)
+	_run.add_item(item.data)
+	var placeholder = _ITEM.instantiate()
+	placeholder.modulate.a = 0
+	_item_container.add_child(placeholder)
+	var pos = item.global_position
+	item.get_parent().remove_child(item)
+	_canvas_layer.add_child(item)
+	item.global_position = pos
+	# Wait for item container to position new child
+	await get_tree().process_frame
+	pos = placeholder.global_position
+	placeholder.queue_free()
+	var tween = create_tween().set_parallel()
+	tween.tween_property(item, "global_position", pos, 0.1)
+	await tween.finished
+	await get_tree().process_frame
+	_canvas_layer.remove_child(item)
+	_item_container.add_child(item)
+	item.global_position = pos
 
 func _display_summary() -> void:
 	var container = %SummaryPanel/VBoxContainer
@@ -286,20 +318,61 @@ func _on_hand_tile_selected(tile: TileControl) -> void:
 func _on_hand_tile_unselected(tile: TileControl) -> void:
 	if _selected_hand_tile == tile:
 		_selected_hand_tile = null
+		_hex_grid.unset_current_tile()
 
 func _on_hex_grid_tile_placed(tile: HabitatTile) -> void:
 	_hand_tiles.erase(_selected_hand_tile)
 	_selected_hand_tile.queue_free()
 	_selected_hand_tile = null
 	_waiting = true
-	await get_tree().create_timer(0.2).timeout
-	var change = TotalScoreChange.new()
-	for item in _items:
-		item.data.on_tile_placed(item, tile, change)
-	for item in change.items:
-		_score += item.total
+	
+	# Handle added random animals
+	var new_animals = false
+	var tiles = _hex_grid.get_all_tiles()
+	for tile2 in tiles:
+		for i in range(2):
+			var animal = tile2.data.animal[i]
+			if animal is RandomAnimal:
+				new_animals = true
+				var new_animal = _run.get_random_animal(animal.terrain, animal.category)
+				tile2.preview_animals[i] = new_animal
+				tile2.data.animal[i] = new_animal
+				tile2.update_animal(i)
+				if animal.permanent:
+					for tile3 in _run.deck:
+						if tile3.id == tile2.data.id:
+							tile3.animal[i] = new_animal
+					for tile3 in _deck:
+						if tile3.id == tile2.data.id:
+							tile3.animal[i] = new_animal
+	
+	# If animals were added, update scores
+	if new_animals:
+		var changes = TileChanges.new()
+		for tile2 in tiles:
+			for i in range(2):
+				if tile2.data.animal[i]:
+					tile2.data.animal[i].calculate_score(changes, tile2, null, i)
+		for tile2 in changes.tiles:
+			tile2.tile.show_animal_preview(tile2)
+		_show_score_preview(changes.change)
+		await get_tree().create_timer(0.5).timeout
+		for tile2 in changes.tiles:
+			tile2.tile.clear_preview()
+		_score_preview.visible = false
+		_score += changes.change
 		_update_score()
-		await item.item.show_score(item.total, false)
+		for tile2 in changes.tiles:
+			tile2.tile.animal_score[tile2.animal_idx] += tile2.score_change
+	
+	await get_tree().create_timer(0.2).timeout
+	var changes = TileChanges.new()
+	for item in _items:
+		item.data.on_tile_placed(item, tile, changes)
+	for item in changes.items:
+		_score += item.score_change
+		_update_score()
+		await item.item.show_score(item.score_change, false)
 	_waiting = false
 	_draw_tile()
 	if _hex_grid.num_empty_cells <= 0 or _hand_tiles.is_empty():
@@ -308,21 +381,14 @@ func _on_hex_grid_tile_placed(tile: HabitatTile) -> void:
 		await _hex_grid.clear_island()
 		_display_summary()
 
-func _on_hex_grid_score_previewed(tile: HabitatTile, change: TotalScoreChange):
+func _on_hex_grid_score_previewed(tile: HabitatTile, change: TileChanges):
 	_score_preview.visible = true
 	for item in _items:
 		item.data.on_placement_previewed(item, tile, change)
 	for item in change.items:
-		item.item.show_score(item.total)
-	if change.change > 0:
-		_score_preview.self_modulate = Color.GREEN
-	elif change.change < 0:
-		_score_preview.self_modulate = Color.RED
-	else:
-		_score_preview.self_modulate = Color.WHITE
-	var string = "+" + str(change.change) if change.change > -1 else str(change.change)
-	_labels.score_preview.set_text(string)
-	
+		item.item.show_score(item.score_change)
+	_show_score_preview(change.change)
+
 func _on_hex_grid_score_preview_ended():
 	_score_preview.visible = false
 	for item in _items:
@@ -359,6 +425,8 @@ func _on_shop_item_button_pressed(shop_item: Node, item: Control) -> void:
 		_money -= shop_item.cost
 		if item is TileControl:
 			_add_tile_to_deck(item)
+		else:
+			_add_item_from_shop(item)
 		shop_item.set_empty()
 
 func _on_shop_button_refresh_pressed() -> void:
