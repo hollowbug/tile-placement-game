@@ -11,7 +11,7 @@ func _init():
 	description = ("<points=1> per connected <animal_category={0}> in a straight line"
 			.format([Globals.ANIMAL_TYPE.RODENT]))
 	
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = 0
 		
 		# Check other animal on this tile

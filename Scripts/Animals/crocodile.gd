@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.UNCOMMON
 	description = "<points=3> per animal on tiles in a straight line between this and another <name>"
 
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 	var highest = 0
 	for dir in range(6):
 		var animals = 0

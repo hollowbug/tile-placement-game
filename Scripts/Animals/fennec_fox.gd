@@ -11,7 +11,7 @@ func _init():
 	description = ("<points=3> per different <rarity={0}> animal on the island"
 			.format([Globals.RARITY.RARE]))
 	
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = 0
 		var animal_names = []
 		for tile2 in tile.get_all_tiles():

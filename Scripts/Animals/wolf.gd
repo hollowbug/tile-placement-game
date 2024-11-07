@@ -12,7 +12,7 @@ func _init():
 			+ "\n<points=1> per adjacent <animal_category={0}>"
 			.format([Globals.ANIMAL_TYPE.HERBIVORE]))
 	
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = [0]
 		var check_animal = func(animal: Animal) -> void:
 			if animal.name == name or animal.name == "Chameleon":

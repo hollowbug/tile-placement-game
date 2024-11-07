@@ -17,19 +17,29 @@ static var DECK_TYPE = {
 		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS),
 		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER),
 		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.WATER),
-		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Duck")),
+		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Deer")),
 		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Duck")),
 		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Duck")),
 		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.DESERT, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Hummingbird")),
-		TileData_.new(Globals.TERRAIN_TYPE.DESERT, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Hummingbird")),
-		TileData_.new(Globals.TERRAIN_TYPE.DESERT, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Hummingbird")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Mouse")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Deer")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Deer")),
+		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Raccoon")),
+		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Raccoon")),
+		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Raccoon")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Deer")),
 		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Mouse")),
 		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Mouse")),
 	] as Array[TileData_],
+	#default = [
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
+	#] as Array[TileData_],
 	#default = [
 		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS),
 		#TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER),
@@ -60,9 +70,11 @@ var _animals_weighted : Array[Animal]
 var _items_weighted : Array[ItemData]
 
 func _init(deck_: String):
-	deck = DECK_TYPE[deck_]
+	deck = []
+	for tile in DECK_TYPE[deck_]:
+		deck.append(tile.copy())
 	items = [
-		#Items.get_item("Banana"),
+		#Items.get_item("Money Tree"),
 		#Items.get_item("Grass"),
 	]
 	island = 0
@@ -76,8 +88,8 @@ func _init(deck_: String):
 
 func next_island() -> void:
 	island += 1
-	required_score = 10 + island * 5
-	#required_score = 1
+	#required_score = 10 + island * 5
+	required_score = 1
 
 func get_random_tile(max_animals: int = 2) -> Dictionary:
 	var cost = 2

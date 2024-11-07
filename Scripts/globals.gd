@@ -9,6 +9,7 @@ enum RARITY {COMMON, UNCOMMON, RARE, MYTHICAL}
 var TEXT_COLOR = {
 	"points_gain": "#00ff00",
 	"points_loss": "#ff0000",
+	"money": "#ffff00",
 	"rarity0": "#ffffff",
 	"rarity1": "#7777ff",
 	"rarity2": "#f0a020",
@@ -127,12 +128,12 @@ func _init():
 func get_animal(name_: String) -> Animal:
 	for animal in ANIMAL:
 		if animal.name == name_:
-			return animal
+			return animal.get_script().new()
 	return null
 
 func format_string(string: String) -> String:
 	var split = split_string(string)
-	var result = ""
+	var results = []
 	for part in split:
 		
 		var regex = RegEx.create_from_string("<points=(.*)>")
@@ -143,12 +144,22 @@ func format_string(string: String) -> String:
 			if str(int(string)) == string:
 				var color = (TEXT_COLOR.points_gain if int(string) >= 0
 						else TEXT_COLOR.points_loss)
-				result += "[b][color={0}]".format([color])
+				var string2 = "[b][color={0}]".format([color])
 				if int(string) > 0:
-					result += "+"
+					string2 += "+"
 				var noun = "point" if abs(int(string)) == 1 else "points"
-				result += string + "[/color][/b] " + noun + " "
+				results.append(string2 + string + "[/color][/b] " + noun)
 				continue
+		
+		regex = RegEx.create_from_string("<money=(.*)>")
+		search = regex.search(part)
+		if search:
+			string = search.get_string(1)
+			var string2 = "[b][color={0}]".format([TEXT_COLOR.money])
+			if int(string) > 0:
+				string2 += "+"
+			results.append(string2 + string + "[/color][/b] Gold")
+			continue
 		
 		regex = RegEx.create_from_string("<animal_category=(.*)>")
 		search = regex.search(part)
@@ -159,7 +170,7 @@ func format_string(string: String) -> String:
 			if str(integer) == string and integer > -1 and integer < ANIMAL_TYPE.values().size():
 				var color = ANIMAL_CATEGORY[integer].text_color
 				var animal = ANIMAL_CATEGORY[integer].name
-				result += "[color={0}]{1}[/color] ".format([color, animal])
+				results.append("[color={0}]{1}[/color] ".format([color, animal]))
 				continue
 		
 		regex = RegEx.create_from_string("<terrain=(.*)>")
@@ -168,7 +179,7 @@ func format_string(string: String) -> String:
 			string = search.get_string(1)
 			var integer = int(string)
 			if integer in TERRAIN:
-				result += TERRAIN[integer].name + " "
+				results.append(TERRAIN[integer].name)
 				continue
 		
 		regex = RegEx.create_from_string("<rarity=(.*)>")
@@ -177,12 +188,12 @@ func format_string(string: String) -> String:
 			string = search.get_string(1)
 			var integer = int(string)
 			if integer in RARITY_STRING:
-				result += RARITY_STRING[integer] + " "
+				results.append(RARITY_STRING[integer])
 				continue
 		
-		result += part + " "
+		results.append(part)
 		
-	return result.trim_suffix(" ")
+	return " ".join(results)
 
 func split_string(string: String) -> Array[String]:
 	var regex = RegEx.new()

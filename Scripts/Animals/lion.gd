@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.RARE
 	description = "<when_played> Remove animals from adjacent tiles and gain <points=3> for each one removed"
 	
-func placement_preview(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func placement_preview(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	if tile != placed_tile:
 		return
 	var points = 0

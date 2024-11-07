@@ -15,6 +15,8 @@ var _state : String:
 
 var _money := 50:
 	set(value):
+		if value == _money:
+			return
 		_money = value
 		_money_node.pop_effect()
 		_labels.money.set_text("$" + str(value))
@@ -28,7 +30,7 @@ var _score : int
 var _money_earned : int
 var _run : RunData
 var _deck : Array[TileData_]
-var _current_deck : Array[TileData_]
+var _shuffled_deck : Array[TileData_]
 var _items : Array[Item]
 var _hand_tiles : Array[TileControl] = []
 var _hovered_hand_tile : TileControl
@@ -79,23 +81,22 @@ func _next_island() -> void:
 	var starting_tiles: Array[TileData_] = []
 	for i in range(num_starting_tiles):
 		starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(10, starting_tiles)
+	_hex_grid.create_island(4, starting_tiles)
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
-	_current_deck = []
 	for tile in _run.deck:
 		_deck.append(tile.copy())
-		_current_deck.append(tile.copy())
 	_deck_viewer.set_deck(_deck)
 	_update_deck_size()
-	_current_deck.shuffle()
+	_shuffled_deck = _deck.duplicate()
+	_shuffled_deck.shuffle()
 	for tile in _hand_tiles:
 		tile.queue_free()
 	_hand_tiles = []
 	_state = "island"
 	_waiting = true
 	await get_tree().create_timer(0.5).timeout
-	var change = TileChanges.new()
+	var change = Changes.new()
 	for item in _items:
 		item.data.on_island_started(item, _hex_grid, change)
 	for item in change.items:
@@ -122,18 +123,17 @@ func _unhandled_key_input(event):
 		_on_deck_viewer_closed()
 
 func _draw_tile() -> void:
-	if _current_deck.is_empty():
+	if _shuffled_deck.is_empty():
 		return
 	var tile = _TILE_CONTROL.instantiate()
-	tile.size = Vector2()
+	tile.position = _deck_button.global_position - _hand.global_position
 	_hand.add_child(tile)
 	_hand_tiles.append(tile)
 	tile.mouse_entered.connect(_on_hand_tile_mouse_entered.bind(tile))
 	tile.mouse_exited.connect(_on_hand_tile_mouse_exited.bind(tile))
 	tile.control_selected.connect(_on_hand_tile_selected.bind(tile))
 	tile.control_unselected.connect(_on_hand_tile_unselected.bind(tile))
-	tile.set_data(_current_deck.pop_front())
-	tile.global_position = _deck_button.global_position
+	tile.set_data(_shuffled_deck.pop_front())
 	tile.scale = Vector2()
 	var tween = create_tween().set_trans(Tween.TRANS_CUBIC).set_ease(Tween.EASE_OUT)
 	tween.tween_property(tile, "scale", Vector2.ONE, 0.3)
@@ -143,22 +143,26 @@ func _unselect_tile() -> void:
 	_selected_hand_tile = null
 	_hex_grid.set_current_tile(null)
 
-func _show_score_preview(change: int) -> void:
-	if change > 0:
+func _show_score_preview(changes: Changes) -> void:
+	_score_preview.visible = true
+	if changes.score_change > 0:
 		_score_preview.self_modulate = Color.GREEN
-	elif change < 0:
+	elif changes.score_change < 0:
 		_score_preview.self_modulate = Color.RED
 	else:
 		_score_preview.self_modulate = Color.WHITE
-	var string = "+" + str(change) if change > -1 else str(change)
+	var string = "+" + str(changes.score_change) if changes.score_change > -1 else str(changes.score_change)
 	_labels.score_preview.set_text(string)
+	if changes.money_change != 0:
+		string = "+" + str(changes.money_change) if changes.money_change > -1 else str(changes.money_change)
+		_labels.money.set_text("${0} {1}".format([str(_money), string]))
 
 func _update_score() -> void:
 	_labels.score.set_text(str(_score) + "/" + str(_run.required_score))
 
 func _update_deck_size() -> void:
 	if _state == "island":
-		_labels.deck_size.set_text(str(_current_deck.size()))
+		_labels.deck_size.set_text(str(_shuffled_deck.size()))
 	else:
 		_labels.deck_size.set_text(str(_deck.size()))
 
@@ -168,6 +172,12 @@ func _enter_shop() -> void:
 	_deck_viewer.set_deck(_run.deck)
 	_shop_nodes.shop.visible = true
 	_refresh_shop()
+	var item_changes = Changes.new()
+	for item in _items:
+		item.data.on_shop_entered(item, item_changes)
+	for item in item_changes.items:
+		_money += item.money_change
+		await item.item.show_score(item.score_change, false)
 	await _slide_in_panel.slide_in()
 	_waiting = false
 
@@ -309,6 +319,11 @@ func _on_hand_tile_mouse_exited(tile: TileControl) -> void:
 		_hovered_hand_tile = null
 
 func _on_hand_tile_selected(tile: TileControl) -> void:
+	if _waiting:
+		for tile2 in _hand_tiles:
+			tile2.unselect()
+		return
+	
 	_selected_hand_tile = tile
 	_hex_grid.set_current_tile(tile.data)
 	for tile2 in _hand_tiles:
@@ -320,59 +335,66 @@ func _on_hand_tile_unselected(tile: TileControl) -> void:
 		_selected_hand_tile = null
 		_hex_grid.unset_current_tile()
 
-func _on_hex_grid_tile_placed(tile: HabitatTile) -> void:
+func _on_hex_grid_tile_placed(tile: HabitatTile, changes: Changes) -> void:
 	_hand_tiles.erase(_selected_hand_tile)
 	_selected_hand_tile.queue_free()
 	_selected_hand_tile = null
 	_waiting = true
+	_score += changes.score_change
+	_update_score()
+	_money += changes.money_change
 	
-	# Handle added random animals
-	var new_animals = false
 	var tiles = _hex_grid.get_all_tiles()
+	var new_animals = false
 	for tile2 in tiles:
 		for i in range(2):
 			var animal = tile2.data.animal[i]
-			if animal is RandomAnimal:
-				new_animals = true
-				var new_animal = _run.get_random_animal(animal.terrain, animal.category)
-				tile2.preview_animals[i] = new_animal
-				tile2.data.animal[i] = new_animal
-				tile2.update_animal(i)
-				if animal.permanent:
-					for tile3 in _run.deck:
-						if tile3.id == tile2.data.id:
-							tile3.animal[i] = new_animal
+			if animal:
+				animal.on_tile_placed(tile2, tile, i)
+				# Handle added random animals
+				if animal is RandomAnimal:
+					new_animals = true
+					var new_animal = _run.get_random_animal(animal.terrain, animal.category)
+					tile2.preview_animals[i] = new_animal
+					tile2.commit_animal_preview()
+					tile2.update_animal(i)
 					for tile3 in _deck:
 						if tile3.id == tile2.data.id:
 							tile3.animal[i] = new_animal
+					if animal.permanent:
+						for tile3 in _run.deck:
+							if tile3.id == tile2.data.id:
+								tile3.animal[i] = new_animal
 	
 	# If animals were added, update scores
 	if new_animals:
-		var changes = TileChanges.new()
+		var new_changes = Changes.new()
 		for tile2 in tiles:
 			for i in range(2):
 				if tile2.data.animal[i]:
-					tile2.data.animal[i].calculate_score(changes, tile2, null, i)
-		for tile2 in changes.tiles:
+					tile2.data.animal[i].calculate_score(new_changes, tile2, null, i)
+		for tile2 in new_changes.tiles:
 			tile2.tile.show_animal_preview(tile2)
-		_show_score_preview(changes.change)
-		await get_tree().create_timer(0.5).timeout
-		for tile2 in changes.tiles:
+		_show_score_preview(new_changes)
+		await get_tree().create_timer(1.0).timeout
+		for tile2 in new_changes.tiles:
 			tile2.tile.clear_preview()
 		_score_preview.visible = false
-		_score += changes.change
+		_score += new_changes.score_change
 		_update_score()
-		for tile2 in changes.tiles:
+		for tile2 in new_changes.tiles:
 			tile2.tile.animal_score[tile2.animal_idx] += tile2.score_change
 	
 	await get_tree().create_timer(0.2).timeout
-	var changes = TileChanges.new()
+	var item_changes = Changes.new()
 	for item in _items:
-		item.data.on_tile_placed(item, tile, changes)
-	for item in changes.items:
+		item.data.on_tile_placed(item, tile, item_changes)
+	for item in item_changes.items:
 		_score += item.score_change
+		_money += item.money_change
 		_update_score()
 		await item.item.show_score(item.score_change, false)
+	_deck_viewer.set_deck(_deck)
 	_waiting = false
 	_draw_tile()
 	if _hex_grid.num_empty_cells <= 0 or _hand_tiles.is_empty():
@@ -381,28 +403,28 @@ func _on_hex_grid_tile_placed(tile: HabitatTile) -> void:
 		await _hex_grid.clear_island()
 		_display_summary()
 
-func _on_hex_grid_score_previewed(tile: HabitatTile, change: TileChanges):
-	_score_preview.visible = true
+func _on_hex_grid_score_previewed(tile: HabitatTile, change: Changes):
 	for item in _items:
 		item.data.on_placement_previewed(item, tile, change)
 	for item in change.items:
 		item.item.show_score(item.score_change)
-	_show_score_preview(change.change)
+	_show_score_preview(change)
 
 func _on_hex_grid_score_preview_ended():
 	_score_preview.visible = false
+	_labels.money.set_text("$" + str(_money))
 	for item in _items:
 		item.hide_score()
 
-func _on_hex_grid_score_changed(change):
-	_score += change
-	_labels.score.set_text(str(_score) + "/" + str(_run.required_score))
+#func _on_hex_grid_score_changed(change):
+	#_score += change
+	#_labels.score.set_text(str(_score) + "/" + str(_run.required_score))
 
 func _on_deck_clicked():
 	if _waiting:
 		return
 	if _state == "island":
-		_deck_viewer.update_remaining_tiles(_current_deck)
+		_deck_viewer.update_remaining_tiles(_shuffled_deck)
 	_deck_viewer.visible = true
 	_deck_button.visible = false
 	_viewing_deck = true

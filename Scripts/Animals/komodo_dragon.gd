@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.COMMON
 	description = "<when_placed> <points=1> per empty tile on the island"
 
-func calculate_score(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	if tile != placed_tile:
 		return
 	var points = 0

@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.UNCOMMON
 	description = "<points=2> per empty tile in this <this_terrain>"
 
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 	var points = 0
 	for other_tile in tile.get_habitat(tile.data.terrain[animal_idx]):
 		if (!other_tile.preview_animals[0]

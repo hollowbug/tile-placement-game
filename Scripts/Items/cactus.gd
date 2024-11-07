@@ -14,18 +14,18 @@ func get_description() -> String:
 	return Globals.format_string("<points=1> per <terrain={0}> Habitat"
 			.format([Globals.TERRAIN_TYPE.DESERT]))
 
-func on_island_started(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
+func on_island_started(item: Item, hex_grid: HexGrid, change: Changes) -> void:
 	_deserts = 0
 	_score(item, hex_grid, change)
 	_deserts = _preview_deserts
 
-func on_placement_previewed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
+func on_placement_previewed(item: Item, tile: HabitatTile, change: Changes) -> void:
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: TileChanges) -> void:
+func on_tile_placed(item: Item, tile: HabitatTile, change: Changes) -> void:
 	_deserts = _preview_deserts
 
-func _score(item: Item, hex_grid: HexGrid, change: TileChanges) -> void:
+func _score(item: Item, hex_grid: HexGrid, change: Changes) -> void:
 	_preview_deserts = 0
 	for habitat in hex_grid.habitats:
 		if habitat.terrain == Globals.TERRAIN_TYPE.DESERT:

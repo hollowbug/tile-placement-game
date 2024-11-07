@@ -10,7 +10,7 @@ func _init():
 	rarity = Globals.RARITY.UNCOMMON
 	description = "<points=5> if this <this_terrain> has at least 4 tiles and no other <name_plural>"
 	
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var habitat = tile.get_habitat(tile.data.terrain[animal_idx])
 		if habitat.size() < 4:
 			return TileChange.new(tile, animal_idx, -tile.animal_score[animal_idx])

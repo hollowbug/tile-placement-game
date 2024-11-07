@@ -1,4 +1,4 @@
-[gd_scene load_steps=19 format=3 uid="uid://b22t40lyxj0ku"]
+[gd_scene load_steps=20 format=3 uid="uid://b22t40lyxj0ku"]
 
 [ext_resource type="Script" path="res://Scripts/game_controller.gd" id="1_bnu0l"]
 [ext_resource type="Script" path="res://Scripts/hex_grid.gd" id="1_ng7jk"]
@@ -39,6 +39,10 @@ corner_radius_bottom_right = 16
 [sub_resource type="LabelSettings" id="LabelSettings_mtf6m"]
 font = ExtResource("13_xnq6a")
 font_size = 64
+font_color = Color(0, 0, 0, 1)
+
+[sub_resource type="LabelSettings" id="LabelSettings_8vtgb"]
+font_size = 24
 font_color = Color(0, 0, 0, 1)
 
 [node name="Main" type="Node3D"]
@@ -271,6 +275,7 @@ alignment = 1
 
 [node name="Button" parent="HUD/SummaryPanel/VBoxContainer/HBoxContainer" instance=ExtResource("9_m750k")]
 layout_mode = 2
+size_flags_horizontal = 3
 text = "Continue"
 
 [node name="Deck" type="Control" parent="HUD"]
@@ -426,6 +431,7 @@ size_flags_horizontal = 3
 
 [node name="ScorePreview" type="PanelContainer" parent="HUD/MarginContainer/VBoxContainer/MarginContainer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 0
@@ -438,7 +444,18 @@ theme_override_font_sizes/font_size = 40
 text = "+3"
 horizontal_alignment = 1
 
-[connection signal="score_changed" from="HexGrid" to="." method="_on_hex_grid_score_changed"]
+[node name="Label" type="Label" parent="HUD"]
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -29.0
+offset_right = 342.0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+text = "Development Build - Contains placeholder art"
+label_settings = SubResource("LabelSettings_8vtgb")
+
 [connection signal="score_preview_ended" from="HexGrid" to="." method="_on_hex_grid_score_preview_ended"]
 [connection signal="score_previewed" from="HexGrid" to="." method="_on_hex_grid_score_previewed"]
 [connection signal="tile_placed" from="HexGrid" to="." method="_on_hex_grid_tile_placed"]

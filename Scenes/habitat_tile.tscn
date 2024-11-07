@@ -1,10 +1,11 @@
-[gd_scene load_steps=9 format=3 uid="uid://ckv56n5m4p0yx"]
+[gd_scene load_steps=10 format=3 uid="uid://ckv56n5m4p0yx"]
 
 [ext_resource type="Script" path="res://Scripts/habitat_tile.gd" id="1_jyij7"]
 [ext_resource type="Texture2D" uid="uid://nnito4uvyesr" path="res://Sprites/chameleon.png" id="2_qiuga"]
 [ext_resource type="PackedScene" uid="uid://c1jki5oeny2wu" path="res://Scenes/animal_ui.tscn" id="3_aral8"]
 [ext_resource type="PackedScene" uid="uid://bcf1skxk6vull" path="res://Scenes/animal_token.tscn" id="4_cms7m"]
 [ext_resource type="Script" path="res://Scripts/3d_control.gd" id="4_r1vh5"]
+[ext_resource type="PackedScene" uid="uid://dgxmdj3gfdokd" path="res://Scenes/tile_info.tscn" id="6_3tq2r"]
 
 [sub_resource type="Gradient" id="Gradient_uruqa"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
@@ -62,28 +63,6 @@ transform = Transform3D(0.866, 0, -0.866025, 0, 1, 0, 1.49996, 0, 0.5, 0, 0.38, 
 visible = false
 texture = SubResource("GradientTexture2D_j435c")
 
-[node name="ColliderFull" type="StaticBody3D" parent="." groups=["Available Cells"]]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-
-[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="ColliderFull"]
-depth = 0.0
-polygon = PackedVector2Array(-0.25, -0.433, 0.25, -0.433, 0.5, 0, 0.25, 0.433, -0.25, 0.433, -0.5, 0)
-
-[node name="Collider1" type="StaticBody3D" parent="."]
-
-[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Collider1"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-depth = 0.0
-polygon = PackedVector2Array(0, 0, 0.5, 0, 0.25, 0.433, -0.25, 0.433, -0.5, 0)
-
-[node name="Collider2" type="StaticBody3D" parent="."]
-transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, 0)
-
-[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Collider2"]
-transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
-depth = 0.0
-polygon = PackedVector2Array(0, 0, 0.5, 0, 0.25, 0.433, -0.25, 0.433, -0.5, 0)
-
 [node name="DebugUI" type="Control" parent="."]
 layout_mode = 3
 anchors_preset = 0
@@ -116,12 +95,32 @@ horizontal_alignment = 1
 visible = false
 
 [node name="AnimalUI" parent="AnimalToken0" instance=ExtResource("3_aral8")]
-visible = false
 scale = Vector2(1, 1)
 
 [node name="AnimalToken1" parent="." instance=ExtResource("4_cms7m")]
 visible = false
 
 [node name="AnimalUI" parent="AnimalToken1" instance=ExtResource("3_aral8")]
-visible = false
 scale = Vector2(1, 1)
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+mouse_filter = 2
+script = ExtResource("4_r1vh5")
+
+[node name="TileInfo" parent="Control" instance=ExtResource("6_3tq2r")]
+visible = false
+layout_mode = 1
+offset_top = -132.0
+offset_bottom = 0.0
+
+[node name="Area3D" type="Area3D" parent="."]
+
+[node name="CollisionPolygon3D" type="CollisionPolygon3D" parent="Area3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, -1, 0, 1, -4.37114e-08, 0, 0, 0)
+depth = 0.0
+polygon = PackedVector2Array(-0.25, -0.433, 0.25, -0.433, 0.5, 0, 0.25, 0.433, -0.25, 0.433, -0.5, 0)
+
+[connection signal="mouse_entered" from="Area3D" to="." method="_on_collider_full_mouse_entered"]
+[connection signal="mouse_exited" from="Area3D" to="." method="_on_collider_full_mouse_exited"]

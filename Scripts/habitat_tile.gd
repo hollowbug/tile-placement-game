@@ -40,9 +40,11 @@ static var _PIECE_SCENES = {
 	},
 }
 
-@onready var COLLIDER_FULL = $ColliderFull
-@onready var COLLIDER1 = $Collider1
-@onready var COLLIDER2 = $Collider2
+@onready var COLLIDER_FULL = $Area3D
+#@onready var COLLIDER_FULL = $ColliderFull
+#@onready var COLLIDER1 = $Collider1
+#@onready var COLLIDER2 = $Collider2
+@onready var _TILE_INFO = $Control/TileInfo
 @onready var ANIMAL_TOKEN = [$AnimalToken0, $AnimalToken1]
 @onready var ANIMAL_ADDED = [$AnimalToken0/AddAnimal, $AnimalToken1/AddAnimal]
 @onready var ANIMAL_REMOVED = [$AnimalToken0/RemoveAnimal, $AnimalToken1/RemoveAnimal]
@@ -64,10 +66,12 @@ func _ready() -> void:
 	]
 
 func _process(_delta):
+	DEBUG_LABEL.visible = visible
 	DEBUG_LABEL.set_text(str(coordinates))
 
 func set_data(data_: TileData_) -> HabitatTile:
 	data = data_
+	update_description()
 	edges = [data.terrain[0], data.terrain[0], data.terrain[0], data.terrain[1], data.terrain[1], data.terrain[1]]
 	is_split = data.terrain[0] != data.terrain[1]
 	
@@ -106,7 +110,10 @@ func set_data(data_: TileData_) -> HabitatTile:
 			#node.rotate_y(i * PI / 3 - rotation.y)
 			#edge_nodes.append(node)
 			#add_child(node)
-	
+
+func update_description() -> void:
+	_TILE_INFO.set_data(data)
+
 func get_habitat(terrain: int) -> Array[HabitatTile]:
 	if terrain in preview_habitats:
 		return preview_habitats[terrain]
@@ -179,8 +186,8 @@ func clear_preview() -> void:
 
 func enable_colliders(enabled: bool = true) -> void:
 	COLLIDER_FULL.get_node("CollisionPolygon3D").disabled = !enabled
-	COLLIDER1.get_node("CollisionPolygon3D").disabled = !enabled
-	COLLIDER2.get_node("CollisionPolygon3D").disabled = !enabled
+	#COLLIDER1.get_node("CollisionPolygon3D").disabled = !enabled
+	#COLLIDER2.get_node("CollisionPolygon3D").disabled = !enabled
 
 func show_() -> void:
 	visible = true
@@ -204,6 +211,7 @@ func show_animal_preview(preview: TileChange) -> void:
 
 func commit_animal_preview() -> void:
 	data.animal = preview_animals
+	_TILE_INFO.set_data(data)
 	for i in range(2):
 		ANIMAL_SCORE_RECT[i].hide_score()
 		ANIMAL_TOKEN[i].visible = data.animal[i] != null
@@ -234,13 +242,21 @@ func _position_animal_ui() -> void:
 	else:
 		ANIMAL_TOKEN[0].position = Vector3(0, y, 0)
 
-#func set_material(material) -> void:
-	#for mesh in meshes:
-		#mesh.set_surface_override_material(0, material)
+
+func _on_collider_full_mouse_entered() -> void:
+	_TILE_INFO.visible = true
+
+
+func _on_collider_full_mouse_exited() -> void:
+	_TILE_INFO.visible = false
 		
 ##############
 # OLD CODE
 ##############
+
+#func set_material(material) -> void:
+	#for mesh in meshes:
+		#mesh.set_surface_override_material(0, material)
 
 #func _load_pieces() -> void:
 	#for i in range(6):

@@ -12,7 +12,7 @@ func _init():
 			+ "\n <points=-3> per <animal_category={1}> within 2 tiles")
 			.format([Globals.ANIMAL_TYPE.RODENT, Globals.ANIMAL_TYPE.PREDATOR]))
 
-func calculate_score(changes: TileChanges, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
 		var points = [0]
 		var check_animal = func(animal: Animal) -> void:
 			if animal.has_category(Globals.ANIMAL_TYPE.RODENT):

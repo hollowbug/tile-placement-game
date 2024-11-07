@@ -17,7 +17,7 @@ func get_description() -> String:
 	result = result.replace("<when_placed>", "[b]When placed:[/b]")
 	result = Globals.format_string(result)
 	return result
-	
+
 func get_category_string() -> String:
 	var strings = []
 	for categ in categories:
@@ -27,10 +27,10 @@ func get_category_string() -> String:
 func has_category(category: int) -> bool:
 	return category in categories
 
-func placement_preview(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func placement_preview(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	pass
 
-func calculate_score(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	pass
 
 func on_tile_placed(tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:

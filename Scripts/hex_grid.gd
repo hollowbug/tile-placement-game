@@ -1,10 +1,10 @@
 extends Node3D
 class_name HexGrid
 
-signal tile_placed(tile: HabitatTile)
-signal score_previewed(tile: HabitatTile, change: TileChanges)
+signal tile_placed(tile: HabitatTile, changes: Changes)
+signal score_previewed(tile: HabitatTile, changes: Changes)
 signal score_preview_ended
-signal score_changed(change: int)
+#signal score_changed(change: int)
 
 const AXIAL_DIRECTION_VECTORS = [
 	Vector2i(1, 0), Vector2i(1, -1), Vector2i(0, -1),
@@ -20,7 +20,7 @@ var _grid : Dictionary
 var _base_tiles: Array[Tile]
 var _current_tile: HabitatTile
 var _hovered_available_cell: Tile
-var _placement_preview: TileChanges
+var _placement_preview: Changes
 
 ###
 # OVERRIDE FUNCTIONS
@@ -84,10 +84,12 @@ func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> vo
 		add_child(tile)
 		_base_tiles.append(tile)
 		if next_tile:
+			tile.enable_colliders(false)
 			# Place starting tile
 			tile = _create_habitat_tile(next_tile)
 			tile.coordinates = pos
 			tile.position = world_pos
+			tile.rotate_tile(randi() % 6)
 		else:
 			tile.mouse_entered.connect(_on_available_cell_mouse_entered)
 			tile.mouse_exited.connect(_on_available_cell_mouse_exited)
@@ -128,6 +130,10 @@ func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> vo
 func clear_island() -> void:
 	var duration = 0.5
 	var separation = 0.1
+	
+	for tile in get_all_tiles():
+		tile.enable_colliders(false)
+	
 	# Tiles fall in reverse of the order they were created in
 	_base_tiles.reverse()
 	for tile in _base_tiles:
@@ -226,15 +232,13 @@ func _place_tile(object : Tile) -> void:
 		_current_tile.commit_placement()
 		_grid[object.coordinates.x][object.coordinates.y] = _current_tile
 		object.enable_colliders(false)
-		#_print_grid()
 		_current_tile.enable_colliders()
-		if _placement_preview:
-			score_changed.emit(_placement_preview.change)
-			for preview in _placement_preview.tiles:
-				preview.tile.animal_score[preview.animal_idx] += preview.score_change
-				preview.tile.commit_animal_preview()
-			_clear_preview()
-		tile_placed.emit(_current_tile)
+			#score_changed.emit(_placement_preview.score_change)
+		for preview in _placement_preview.tiles:
+			preview.tile.animal_score[preview.animal_idx] += preview.score_change
+			preview.tile.commit_animal_preview()
+		tile_placed.emit.call_deferred(_current_tile, _placement_preview)
+		_clear_preview()
 		_current_tile = null
 		_hovered_available_cell = null
 		num_empty_cells -= 1
@@ -254,7 +258,7 @@ func _preview_tile_placement(empty_slot: Tile, tile: HabitatTile) -> void:
 	_grid[empty_slot.coordinates.x][empty_slot.coordinates.y] = tile
 	var neighbors = get_neighbors(tile)
 	tile.preview_placement(neighbors)
-	_placement_preview = TileChanges.new()
+	_placement_preview = Changes.new()
 	
 	# Animal effects, such as removing other animals
 	for tile_ in get_all_tiles():

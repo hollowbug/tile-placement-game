@@ -1,0 +1,53 @@
+[gd_scene load_steps=6 format=3 uid="uid://dgxmdj3gfdokd"]
+
+[ext_resource type="StyleBox" uid="uid://b38wvwh6g6qku" path="res://Resources/style_box_hover_card.tres" id="1_1va8o"]
+[ext_resource type="Theme" uid="uid://dswhrloqs04nu" path="res://Resources/theme_main.tres" id="2_od8hi"]
+[ext_resource type="Script" path="res://Scripts/tile_info.gd" id="2_vsq40"]
+[ext_resource type="StyleBox" uid="uid://b73ix34l0wxtl" path="res://Resources/style_box_black.tres" id="3_dy8lo"]
+[ext_resource type="PackedScene" uid="uid://b32qjpvqcyj6c" path="res://Scenes/animal_panel.tscn" id="4_kode6"]
+
+[node name="TileInfo" type="PanelContainer"]
+custom_minimum_size = Vector2(300, 0)
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -150.0
+offset_top = -197.0
+offset_right = 150.0
+offset_bottom = -156.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("1_1va8o")
+script = ExtResource("2_vsq40")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("2_od8hi")
+
+[node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
+layout_mode = 2
+mouse_filter = 2
+theme_override_styles/panel = ExtResource("3_dy8lo")
+
+[node name="Terrains" type="RichTextLabel" parent="VBoxContainer/PanelContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+mouse_filter = 2
+theme = ExtResource("2_od8hi")
+bbcode_enabled = true
+text = "[center][color=green]Plains"
+fit_content = true
+
+[node name="AnimalPanel1" parent="VBoxContainer" instance=ExtResource("4_kode6")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+
+[node name="AnimalPanel0" parent="VBoxContainer" instance=ExtResource("4_kode6")]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2

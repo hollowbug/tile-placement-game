@@ -10,12 +10,12 @@ func _init():
 	rarity = Globals.RARITY.MYTHICAL
 	description = "<when_placed> Permanently add random animals to adjacent tiles"
 
-func placement_preview(changes: TileChanges, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func placement_preview(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
 	if tile != placed_tile:
 		return
 	for tile2 in tile.get_neighbors():
 		for i in range(2):
-			if i == 1 and !tile.is_split:
+			if i == 1 and !tile2.is_split:
 				break
 			if !tile2.preview_animals[i] and !tile2.data.animal[i]:
 				var animal = RandomAnimal.new()
