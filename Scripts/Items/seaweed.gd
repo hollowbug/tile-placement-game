@@ -11,7 +11,7 @@ func _init(id_: int):
 	sprite = preload("res://Sprites/Items/seaweed.png")
 
 func get_description() -> String:
-	return Globals.format_string("<points=1> per <terrain={0}> tile with no animal"
+	return Globals.format_string("<points=1> per <terrain={0}> piece with no animal"
 			.format([Globals.TERRAIN_TYPE.WATER]))
 
 func on_island_started(item: Item, hex_grid: HexGrid, change: Changes) -> void:

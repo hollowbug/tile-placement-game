@@ -64,6 +64,7 @@ visible = false
 texture = SubResource("GradientTexture2D_j435c")
 
 [node name="DebugUI" type="Control" parent="."]
+visible = false
 layout_mode = 3
 anchors_preset = 0
 offset_left = -19.0
@@ -110,7 +111,6 @@ mouse_filter = 2
 script = ExtResource("4_r1vh5")
 
 [node name="TileInfo" parent="Control" instance=ExtResource("6_3tq2r")]
-visible = false
 layout_mode = 1
 offset_top = -132.0
 offset_bottom = 0.0

@@ -11,7 +11,10 @@ var animal_score := [0, 0]
 var habitats : Dictionary = {}
 var preview_habitats : Dictionary = {}
 var preview_animals : Array[Animal]
+var ignore_hover = false
 
+var _hovered := false
+var _hover_timer := 0.0
 var _score_tween : Array[Tween] = [null, null]
 var _raise_tween : Array[Tween] = [null, null]
 var _HIGHLIGHTS : Array[Node]
@@ -65,9 +68,13 @@ func _ready() -> void:
 		$Highlight6,
 	]
 
-func _process(_delta):
-	DEBUG_LABEL.visible = visible
-	DEBUG_LABEL.set_text(str(coordinates))
+func _process(delta):
+	#DEBUG_LABEL.visible = visible
+	#DEBUG_LABEL.set_text(str(coordinates))
+	if _hovered:
+		_TILE_INFO.modulate.a = min(1.0, _hover_timer / 0.2)
+		_hover_timer += delta
+		#if _hover_timer > 0.2:
 
 func set_data(data_: TileData_) -> HabitatTile:
 	data = data_
@@ -186,6 +193,7 @@ func clear_preview() -> void:
 
 func enable_colliders(enabled: bool = true) -> void:
 	COLLIDER_FULL.get_node("CollisionPolygon3D").disabled = !enabled
+	ignore_hover = true
 	#COLLIDER1.get_node("CollisionPolygon3D").disabled = !enabled
 	#COLLIDER2.get_node("CollisionPolygon3D").disabled = !enabled
 
@@ -200,8 +208,8 @@ func hide_() -> void:
 	ANIMAL_UI[1].visible = false
 
 func show_animal_preview(preview: TileChange) -> void:
-	if preview.score_change != 0:
-		ANIMAL_SCORE_RECT[preview.animal_idx].show_score(preview.score_change)
+	if preview.score_change != 0 or preview.money_change != 0:
+		ANIMAL_SCORE_RECT[preview.animal_idx].show_score(preview.score_change, true, preview.money_change)
 	if data.animal[preview.animal_idx] and !preview_animals[preview.animal_idx]:
 		ANIMAL_REMOVED[preview.animal_idx].visible = true
 		update_animal(preview.animal_idx)
@@ -244,11 +252,15 @@ func _position_animal_ui() -> void:
 
 
 func _on_collider_full_mouse_entered() -> void:
-	_TILE_INFO.visible = true
-
+	if ignore_hover:
+		ignore_hover = false
+	else:
+		_hovered = true
 
 func _on_collider_full_mouse_exited() -> void:
-	_TILE_INFO.visible = false
+	_hovered = false
+	_hover_timer = 0
+	_TILE_INFO.modulate.a = 0
 		
 ##############
 # OLD CODE

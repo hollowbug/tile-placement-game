@@ -7,29 +7,25 @@
 [ext_resource type="PackedScene" uid="uid://b32qjpvqcyj6c" path="res://Scenes/animal_panel.tscn" id="4_kode6"]
 
 [node name="TileInfo" type="PanelContainer"]
+modulate = Color(1, 1, 1, 0)
 custom_minimum_size = Vector2(300, 0)
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -197.0
-offset_right = 150.0
-offset_bottom = -156.0
-grow_horizontal = 2
-grow_vertical = 0
+offset_right = 300.0
+offset_bottom = 41.0
+size_flags_horizontal = 4
+size_flags_vertical = 8
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("1_1va8o")
 script = ExtResource("2_vsq40")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 layout_mode = 2
+size_flags_vertical = 8
 mouse_filter = 2
 theme = ExtResource("2_od8hi")
 
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 layout_mode = 2
+size_flags_vertical = 4
 mouse_filter = 2
 theme_override_styles/panel = ExtResource("3_dy8lo")
 

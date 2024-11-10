@@ -397,7 +397,8 @@ vertical_alignment = 1
 layout_mode = 2
 theme = ExtResource("7_tdofo")
 
-[node name="Label" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer2"]
+[node name="LabelScoreText" type="Label" parent="HUD/MarginContainer/VBoxContainer/MarginContainer/HSplitContainer/HBoxContainer/IslandPanel/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 size_flags_vertical = 6
 theme = ExtResource("7_tdofo")

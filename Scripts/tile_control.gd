@@ -40,8 +40,8 @@ func set_data(data_: TileData_) -> void:
 
 func _on_mouse_entered() -> void:
 	super()
-	_tile_info.visible = true
+	_tile_info.modulate.a = 1
 
 func _on_mouse_exited() -> void:
 	super()
-	_tile_info.visible = false
+	_tile_info.modulate.a = 0

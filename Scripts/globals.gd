@@ -111,16 +111,18 @@ func _init():
 	var dirname = "res://Scripts/Animals"
 	var animal_files = list_files_in_folder(dirname)
 	for fname in animal_files:
-		var animal = load(dirname.path_join(fname)).new()
-		if animal.exclude == false:
-			ANIMAL.append(animal)
+		if fname.ends_with(".gd") or fname.ends_with(".gdc"):
+			var animal = load(dirname.path_join(fname)).new()
+			if animal.exclude == false:
+				ANIMAL.append(animal)
+				print("Loading animal: ", animal.name)
 	
 	for animal in ANIMAL:
 		for habitat in animal.habitats:
 			TERRAIN[habitat].animals.append(animal)
 		for category in animal.categories:
 			ANIMAL_CATEGORY[category].animals.append(animal)
-			
+	
 	for key in ANIMAL_CATEGORY:
 		var categ = ANIMAL_CATEGORY[key]
 		categ.string = "[color={0}]{1}[/color]".format([categ.text_color, categ.name])
@@ -139,35 +141,35 @@ func format_string(string: String) -> String:
 		var regex = RegEx.create_from_string("<points=(.*)>")
 		var search = regex.search(part)
 		if search:
-			string = search.get_string(1)
+			var string_ = search.get_string(1)
 			# Make sure it's a number
-			if str(int(string)) == string:
-				var color = (TEXT_COLOR.points_gain if int(string) >= 0
+			if str(int(string_)) == string_:
+				var color = (TEXT_COLOR.points_gain if int(string_) >= 0
 						else TEXT_COLOR.points_loss)
 				var string2 = "[b][color={0}]".format([color])
-				if int(string) > 0:
+				if int(string_) > 0:
 					string2 += "+"
-				var noun = "point" if abs(int(string)) == 1 else "points"
-				results.append(string2 + string + "[/color][/b] " + noun)
+				var noun = "point" if abs(int(string_)) == 1 else "points"
+				results.append(string2 + string_ + "[/color][/b] " + noun)
 				continue
 		
 		regex = RegEx.create_from_string("<money=(.*)>")
 		search = regex.search(part)
 		if search:
-			string = search.get_string(1)
+			var string_ = search.get_string(1)
 			var string2 = "[b][color={0}]".format([TEXT_COLOR.money])
-			if int(string) > 0:
+			if int(string_) > 0:
 				string2 += "+"
-			results.append(string2 + string + "[/color][/b] Gold")
+			results.append(string2 + "$" + string_ + "[/color][/b]")
 			continue
 		
 		regex = RegEx.create_from_string("<animal_category=(.*)>")
 		search = regex.search(part)
 		if search:
-			string = search.get_string(1)
+			var string_ = search.get_string(1)
 			# Make sure animal category is valid
-			var integer = int(string)
-			if str(integer) == string and integer > -1 and integer < ANIMAL_TYPE.values().size():
+			var integer = int(string_)
+			if str(integer) == string_ and integer > -1 and integer < ANIMAL_TYPE.values().size():
 				var color = ANIMAL_CATEGORY[integer].text_color
 				var animal = ANIMAL_CATEGORY[integer].name
 				results.append("[color={0}]{1}[/color] ".format([color, animal]))
@@ -176,8 +178,8 @@ func format_string(string: String) -> String:
 		regex = RegEx.create_from_string("<terrain=(.*)>")
 		search = regex.search(part)
 		if search:
-			string = search.get_string(1)
-			var integer = int(string)
+			var string_ = search.get_string(1)
+			var integer = int(string_)
 			if integer in TERRAIN:
 				results.append(TERRAIN[integer].name)
 				continue
@@ -185,8 +187,8 @@ func format_string(string: String) -> String:
 		regex = RegEx.create_from_string("<rarity=(.*)>")
 		search = regex.search(part)
 		if search:
-			string = search.get_string(1)
-			var integer = int(string)
+			var string_ = search.get_string(1)
+			var integer = int(string_)
 			if integer in RARITY_STRING:
 				results.append(RARITY_STRING[integer])
 				continue

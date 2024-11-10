@@ -51,16 +51,16 @@ func _update() -> void:
 			_tween.tween_property(self, "custom_minimum_size:x",
 					total_size.x + gap * (children.size() - 1), tween_duration)
 			var pos = 0
-			print()
+			#print()
 			for child in children:
 				if child is Control:
-					if child == children[-1]:
-						_tween.tween_method((func(progress, node, start_pos, end_pos):
-							node.position = lerp(start_pos, end_pos, progress)
-							print(" ".join([lerp(start_pos, end_pos, progress), progress, start_pos.x, end_pos.x, node.position.x, node.scale]))
-						).bind(child, child.position, Vector2(pos, size.y / 2 - child.size.y / 2),
-						), 0.0, 1.0, tween_duration)
-					else:
+					#if child == children[-1]:
+						#_tween.tween_method((func(progress, node, start_pos, end_pos):
+							#node.position = lerp(start_pos, end_pos, progress)
+							#print(" ".join([lerp(start_pos, end_pos, progress), progress, start_pos.x, end_pos.x, node.position.x, node.scale]))
+						#).bind(child, child.position, Vector2(pos, size.y / 2 - child.size.y / 2),
+						#), 0.0, 1.0, tween_duration)
+					#else:
 						_tween.tween_property(child, "position",
 								Vector2(pos, size.y / 2 - child.size.y / 2), tween_duration)
 						pos += gap + child.size.x

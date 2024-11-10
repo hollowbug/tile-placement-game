@@ -4,7 +4,7 @@ func _init(id_: int):
 	super(id_)
 	exclude = false
 	name = "Money Tree"
-	rarity = Globals.RARITY.UNCOMMON
+	rarity = Globals.RARITY.COMMON
 	sprite = preload("res://Sprites/Items/money_tree.png")
 
 func get_description() -> String:

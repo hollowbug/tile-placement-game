@@ -7,13 +7,13 @@ var _ITEM = preload("res://Scenes/item.tscn")
 var _state : String:
 	set(value):
 		_state = value
-		if value == "island":
-			_island_panel.modulate.a = 1.0
-		else:
-			_island_panel.modulate.a = 0.0
+		#if value == "island":
+			#_island_panel.modulate.a = 1.0
+		#else:
+			#_island_panel.modulate.a = 0.0
 		_deck_viewer.island_mode = value == "island"
 
-var _money := 50:
+var _money := 0:
 	set(value):
 		if value == _money:
 			return
@@ -40,7 +40,7 @@ var _shop_items : Array[Control]
 
 @onready var _canvas_layer := $HUD
 @onready var _hex_grid := $HexGrid
-@onready var _island_panel = %IslandPanel
+#@onready var _island_panel = %IslandPanel
 @onready var _score_preview := %ScorePreview
 @onready var _hand := %HandTiles
 @onready var _deck_button := %Deck
@@ -49,6 +49,8 @@ var _shop_items : Array[Control]
 @onready var _item_container := %Items
 @onready var _slide_in_panel := %SlideInPanel
 @onready var _labels := {
+	island = %LabelIsland,
+	score_text = %LabelScoreText,
 	score = %LabelScore,
 	score_preview = %LabelScorePreview,
 	deck_size = %LabelDeckSize,
@@ -70,18 +72,19 @@ func _ready():
 			_add_item(item)
 		else:
 			print("Error creating starting item")
-	#_next_island()
-	_enter_shop()
-	
-func _next_island() -> void:
 	_run.next_island()
+	#_next_island()
+	_money = 250
+	_enter_shop()
+
+func _next_island() -> void:
 	_score = 0
 	_update_score()
 	var num_starting_tiles = randi_range(2, 5)
 	var starting_tiles: Array[TileData_] = []
 	for i in range(num_starting_tiles):
 		starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(4, starting_tiles)
+	_hex_grid.create_island(10, starting_tiles)
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
 	for tile in _run.deck:
@@ -102,7 +105,7 @@ func _next_island() -> void:
 	for item in change.items:
 		_score += item.score_change
 		_update_score()
-		await item.item.show_score(item.score_change, false)
+		await item.item.show_score(item, false)
 	_waiting = false
 	for i in range(_run.hand_size):
 		_draw_tile()
@@ -177,7 +180,8 @@ func _enter_shop() -> void:
 		item.data.on_shop_entered(item, item_changes)
 	for item in item_changes.items:
 		_money += item.money_change
-		await item.item.show_score(item.score_change, false)
+		item.item.pop_effect()
+		await get_tree().create_timer(0.5).timeout
 	await _slide_in_panel.slide_in()
 	_waiting = false
 
@@ -204,7 +208,10 @@ func _refresh_shop() -> void:
 		item.queue_free()
 	_shop_items = []
 	var random_items = _run.get_shop_items()
+	random_items.sort_custom(func(a,b): return a.cost < b.cost)
 	for i in range(3):
+		if random_items.size() <= i:
+			break
 		var shop_item = _SHOP_ITEM.instantiate()
 		var item = _ITEM.instantiate()
 		_shop_items.append(shop_item)
@@ -212,6 +219,8 @@ func _refresh_shop() -> void:
 		shop_item.set_item(item, random_items[i].cost)
 		item.set_data(random_items[i].item)
 		shop_item.button.pressed.connect(_on_shop_item_button_pressed.bind(shop_item, item))
+	
+	_update_buy_buttons()
 
 #func _randomize_tile_options() -> void:
 	#_hand_tiles_data = []
@@ -397,9 +406,10 @@ func _on_hex_grid_tile_placed(tile: HabitatTile, changes: Changes) -> void:
 	_deck_viewer.set_deck(_deck)
 	_waiting = false
 	_draw_tile()
+	# Check for end of island
 	if _hex_grid.num_empty_cells <= 0 or _hand_tiles.is_empty():
 		_waiting = true
-		#await get_tree().create_timer(0.4).timeout
+		await get_tree().create_timer(0.2).timeout
 		await _hex_grid.clear_island()
 		_display_summary()
 
@@ -407,7 +417,7 @@ func _on_hex_grid_score_previewed(tile: HabitatTile, change: Changes):
 	for item in _items:
 		item.data.on_placement_previewed(item, tile, change)
 	for item in change.items:
-		item.item.show_score(item.score_change)
+		item.item.show_score(item)
 	_show_score_preview(change)
 
 func _on_hex_grid_score_preview_ended():
@@ -421,23 +431,27 @@ func _on_hex_grid_score_preview_ended():
 	#_labels.score.set_text(str(_score) + "/" + str(_run.required_score))
 
 func _on_deck_clicked():
-	if _waiting:
-		return
+	#if _waiting:
+		#return
 	if _state == "island":
 		_deck_viewer.update_remaining_tiles(_shuffled_deck)
 	_deck_viewer.visible = true
-	_deck_button.visible = false
+	#_deck_button.visible = false
 	_viewing_deck = true
 
 func _on_deck_viewer_closed():
 	_deck_viewer.visible = false
 	_viewing_deck = false
-	_deck_button.visible = true
+	#_deck_button.visible = true
 
 func _on_summary_closed():
 	%SummaryPanel.visible = false
 	if _score >= _run.required_score:
 		_money += _money_earned
+		_run.next_island()
+		_labels.island.set_text("Island " + str(_run.island))
+		_labels.score_text.set_text("Required score:")
+		_labels.score.set_text(str(_run.required_score))
 		_enter_shop()
 	else:
 		get_tree().reload_current_scene()
@@ -455,7 +469,8 @@ func _on_shop_button_refresh_pressed() -> void:
 	if _money >= _run.refresh_cost:
 		_refresh_shop()
 		_money -= _run.refresh_cost
-	
+
 func _on_shop_button_continue_pressed() -> void:
 	_slide_in_panel.visible = false
+	_labels.score_text.set_text("Score")
 	_next_island()

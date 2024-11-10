@@ -21,8 +21,8 @@ func set_data(data_: ItemData) -> void:
 	else:
 		_description.visible = false
 
-func show_score(amount: int, preview: bool = true) -> void:
-	await _score_rect.show_score(amount, preview)
+func show_score(change: ItemScoreChange, preview: bool = true) -> void:
+	await _score_rect.show_score(change.score_change, preview, change.money_change)
 	
 func hide_score() -> void:
 	_score_rect.hide_score()
