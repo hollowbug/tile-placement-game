@@ -2,6 +2,10 @@ extends Node
 
 const CELL_SIZE := 1.0 / sqrt(3)
 enum TERRAIN_TYPE {GRASS, WATER, FOREST1, JUNGLE, DESERT}
+enum SPECIAL_TERRAIN_TYPE {
+	VOLCANO = 100,
+	ROCK = 101,
+}
 enum ANIMAL_TYPE {BIRD, HERBIVORE, PREDATOR, REPTILE, RODENT}
 var ANIMAL: Array[Animal] = []
 enum RARITY {COMMON, UNCOMMON, RARE, MYTHICAL}
@@ -71,6 +75,17 @@ var TERRAIN = {
 		sprite_full = preload("res://Sprites/tile_desert_full.png"),
 		animal_token_y = 0.25,
 	},
+	SPECIAL_TERRAIN_TYPE.VOLCANO: {
+		name = "[color=red]Volcano[/color]",
+		name_raw = "Volcano",
+		animal_token_y = 0.6
+	},
+	SPECIAL_TERRAIN_TYPE.ROCK: {
+		name = "[color=gray]Rock[/color]",
+		name_raw = "Rock",
+		sprite_full = preload("res://Sprites/tile_rock_full.png"),
+		animal_token_y = 0.25
+	},
 }
 
 var ANIMAL_CATEGORY = {
@@ -104,6 +119,15 @@ var ANIMAL_CATEGORY = {
 		name_plural = "Rodents",
 		animals = [],
 		text_color = "#f07720",
+	}
+}
+
+var BOSS = {
+	Volcano = {
+		sprite = preload("res://Sprites/boss_volcano.png"),
+		description = format_string("Adds a temporary <terrain={0}> tile to your deck"
+				.format([SPECIAL_TERRAIN_TYPE.ROCK])
+				+ " whenever you place a tile next to the Volcano"),
 	}
 }
 

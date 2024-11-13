@@ -30,4 +30,3 @@ func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatT
 				if animal:
 					check_animal.call(animal)
 		changes.add_tile(TileChange.new(tile, animal_idx, points[0] - tile.animal_score[animal_idx]))
-

@@ -12,6 +12,7 @@ var habitats : Dictionary = {}
 var preview_habitats : Dictionary = {}
 var preview_animals : Array[Animal]
 var ignore_hover = false
+var rotations := 0
 
 var _hovered := false
 var _hover_timer := 0.0
@@ -19,7 +20,6 @@ var _score_tween : Array[Tween] = [null, null]
 var _raise_tween : Array[Tween] = [null, null]
 var _HIGHLIGHTS : Array[Node]
 var _pieces : Array[Node] = []
-var _rotations := 0
 static var _PIECE_SCENES = {
 	Globals.TERRAIN_TYPE.GRASS: {
 		full = preload("res://3D/grass_full.glb"),
@@ -40,6 +40,12 @@ static var _PIECE_SCENES = {
 	Globals.TERRAIN_TYPE.DESERT: {
 		full = preload("res://3D/desert_full.glb"),
 		half = preload("res://3D/desert_half.glb"),
+	},
+	Globals.SPECIAL_TERRAIN_TYPE.VOLCANO: {
+		full = preload("res://3D/Hex Tiles/volcano.obj")
+	},
+	Globals.SPECIAL_TERRAIN_TYPE.ROCK: {
+		full = preload("res://3D/rock_full.glb")
 	},
 }
 
@@ -94,12 +100,9 @@ func set_data(data_: TileData_) -> HabitatTile:
 		add_child(piece1)
 		_pieces.append(piece1)
 	else:
-		var piece0 = _PIECE_SCENES[data.terrain[0]].full.instantiate()
-		add_child(piece0)
-		_pieces.append(piece0)
-		#if data.terrain[0] == Globals.TERRAIN_TYPE.WATER:
-			#var mesh = piece0.find_children("", "MeshInstance3D", true, false)
-			#mesh[0].set_surface_override_material(0, material)
+		var piece = _PIECE_SCENES[data.terrain[0]].full.instantiate()
+		add_child(piece)
+		_pieces.append(piece)
 
 	preview_animals = data.animal.duplicate()
 	update_animal(0)
@@ -134,7 +137,7 @@ func get_habitat(terrain: int) -> Array[HabitatTile]:
 		return []
 	
 func rotate_tile(steps_cw: int) -> void:
-	_rotations -= steps_cw
+	rotations -= steps_cw
 	rotate_y(-steps_cw * PI / 3)
 	for i in range(2):
 		ANIMAL_TOKEN[i].rotate_object_local(Vector3.UP, steps_cw * PI / 3)

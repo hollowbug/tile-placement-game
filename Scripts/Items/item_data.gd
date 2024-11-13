@@ -6,6 +6,7 @@ static var max_id = 0
 var exclude : bool = true
 var id : int
 var name : String
+var instant : bool = false
 var rarity : int
 var sprite : Resource
 

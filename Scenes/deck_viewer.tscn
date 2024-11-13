@@ -59,16 +59,28 @@ layout_mode = 2
 toggle_mode = true
 text = "All"
 
+[node name="LabelRemoveTile" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Select tile to remove"
+horizontal_alignment = 1
+
+[node name="LabelAddRandomAnimal" type="Label" parent="VBoxContainer"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 40
+text = "Select tile to add a random animal to"
+horizontal_alignment = 1
+
 [node name="PanelContainer" type="PanelContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(0, 600)
 layout_mode = 2
 theme_override_styles/panel = SubResource("StyleBoxFlat_uppqn")
 
-[node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer/PanelContainer"]
-layout_mode = 2
-horizontal_scroll_mode = 0
-
-[node name="TileContainer" type="HFlowContainer" parent="VBoxContainer/PanelContainer/ScrollContainer"]
+[node name="TileContainer" type="HFlowContainer" parent="VBoxContainer/PanelContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 size_flags_horizontal = 3
@@ -79,10 +91,11 @@ theme_override_constants/v_separation = 12
 layout_mode = 2
 alignment = 2
 
-[node name="Button2" parent="VBoxContainer/HBoxContainer" instance=ExtResource("1_exwmw")]
+[node name="ButtonClose" parent="VBoxContainer/HBoxContainer" instance=ExtResource("1_exwmw")]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Close"
 
 [connection signal="toggled" from="VBoxContainer/IslandModeButtons/ButtonRemaining" to="." method="_on_button_remaining_toggled"]
 [connection signal="toggled" from="VBoxContainer/IslandModeButtons/ButtonAll" to="." method="_on_button_all_toggled"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/Button2" to="." method="_on_button_close_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/ButtonClose" to="." method="_on_button_close_pressed"]

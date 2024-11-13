@@ -89,7 +89,10 @@ func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> vo
 			tile = _create_habitat_tile(next_tile)
 			tile.coordinates = pos
 			tile.position = world_pos
-			tile.rotate_tile(randi() % 6)
+			if tile.data.terrain[0] == Globals.SPECIAL_TERRAIN_TYPE.VOLCANO:
+				tile.rotate_y(-PI / 6 * 5)
+			else:
+				tile.rotate_tile(randi() % 6)
 		else:
 			tile.mouse_entered.connect(_on_available_cell_mouse_entered)
 			tile.mouse_exited.connect(_on_available_cell_mouse_exited)
@@ -178,12 +181,12 @@ func get_all_tiles(include_empty_cells: bool = false) -> Array[Tile]:
 				result.append(_grid[x][y])
 	return result
 	
-func get_tiles_in_range(tile: Tile, range: int,
+func get_tiles_in_range(tile: Tile, range_: int,
 		include_empty_cells: bool = false, include_origin_tile: bool = false) -> Array[Tile]:
 	var result: Array[Tile] = []
 	for tile2 in get_all_tiles(include_empty_cells):
 		if ((tile != tile2 or include_origin_tile)
-				and _axial_distance(tile.coordinates, tile2.coordinates) <= range):
+				and _axial_distance(tile.coordinates, tile2.coordinates) <= range_):
 			result.append(tile2)
 	return result
 

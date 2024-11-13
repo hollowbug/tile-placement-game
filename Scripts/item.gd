@@ -14,7 +14,10 @@ func set_data(data_: ItemData) -> void:
 	data = data_
 	%Sprite.set_texture(data_.sprite) 
 	%Name.set_text(data_.name)
-	%Rarity.set_text("[center]" + Globals.RARITY_STRING[data.rarity])
+	var string = "[center]" + Globals.RARITY_STRING[data.rarity]
+	if data_.instant:
+		string += " Instant"
+	%Rarity.set_text(string + " Item")
 	if data.get_description:
 		_description.visible = true
 		_description.set_text("[center]" + data.get_description.call())

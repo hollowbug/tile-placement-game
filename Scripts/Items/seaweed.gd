@@ -23,7 +23,7 @@ func on_placement_previewed(item: Item, tile: HabitatTile, change: Changes) -> v
 	_preview_waters = 0
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: Changes) -> void:
+func on_tile_placed(_item: Item, _tile: HabitatTile, _change: Changes) -> void:
 	_waters = _preview_waters
 
 func _score(item: Item, hex_grid: HexGrid, change: Changes) -> void:

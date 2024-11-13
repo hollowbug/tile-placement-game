@@ -25,7 +25,7 @@ func _ready():
 func unselect() -> void:
 	if selected:
 		selected = false
-		#control_unselected.emit()
+		control_unselected.emit()
 		if !hovered:
 			_end_hover_effect()
 			

@@ -25,6 +25,7 @@ var _money := 0:
 
 var _waiting := false
 var _viewing_deck := false
+var _instant_item_in_use : Control
 var _score : int
 #var _displayed_score : int
 var _money_earned : int
@@ -48,13 +49,17 @@ var _shop_items : Array[Control]
 @onready var _money_node := %Money
 @onready var _item_container := %Items
 @onready var _slide_in_panel := %SlideInPanel
+@onready var _boss_image := %Boss
+@onready var _boss_info := %BossInfo
 @onready var _labels := {
 	island = %LabelIsland,
 	score_text = %LabelScoreText,
 	score = %LabelScore,
 	score_preview = %LabelScorePreview,
 	deck_size = %LabelDeckSize,
-	money = %LabelMoney
+	money = %LabelMoney,
+	boss_name = %BossName,
+	boss_description = %BossDescription,
 }
 @onready var _shop_nodes := {
 	shop = %Shop,
@@ -80,11 +85,25 @@ func _ready():
 func _next_island() -> void:
 	_score = 0
 	_update_score()
-	var num_starting_tiles = randi_range(2, 5)
 	var starting_tiles: Array[TileData_] = []
-	for i in range(num_starting_tiles):
-		starting_tiles.append(_run.get_random_tile(0).tile)
+	
+	if _run.current_boss:
+		var boss = Globals.BOSS[_run.current_boss]
+		_boss_image.set_texture(boss.sprite)
+		_labels.boss_name.set_text("Boss: " + _run.current_boss)
+		_labels.boss_description.set_text("[center]" + boss.description)
+		_boss_image.show()
+	else:
+		_boss_image.hide()
+		
+	if _run.current_boss == "Volcano":
+		starting_tiles.append(TileData_.new(Globals.SPECIAL_TERRAIN_TYPE.VOLCANO, Globals.SPECIAL_TERRAIN_TYPE.VOLCANO))
+	else:
+		var num_starting_tiles = randi_range(2, 5)
+		for i in range(num_starting_tiles):
+			starting_tiles.append(_run.get_random_tile(0).tile)
 	_hex_grid.create_island(10, starting_tiles)
+	
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
 	for tile in _run.deck:
@@ -167,7 +186,7 @@ func _update_deck_size() -> void:
 	if _state == "island":
 		_labels.deck_size.set_text(str(_shuffled_deck.size()))
 	else:
-		_labels.deck_size.set_text(str(_deck.size()))
+		_labels.deck_size.set_text(str(_run.deck.size()))
 
 func _enter_shop() -> void:
 	_state = "shop"
@@ -232,6 +251,8 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	_deck.push_back(tile.data)
 	if !temporary:
 		_run.deck.push_back(tile.data)
+	if _state == "island":
+		_deck.append(tile.data)
 	_deck_viewer.add_tile(tile.data)
 	var pos = tile.global_position
 	tile.get_parent().remove_child(tile)
@@ -404,6 +425,16 @@ func _on_hex_grid_tile_placed(tile: HabitatTile, changes: Changes) -> void:
 		_update_score()
 		await item.item.show_score(item.score_change, false)
 	_deck_viewer.set_deck(_deck)
+	
+	if _run.current_boss == "Volcano":
+		for tile2 in _hex_grid.get_neighbors(tile):
+			if tile2 and tile2.data.terrain[0] == Globals.SPECIAL_TERRAIN_TYPE.VOLCANO:
+				var rock_tile = _TILE_CONTROL.instantiate()
+				rock_tile.set_data(TileData_.new(Globals.SPECIAL_TERRAIN_TYPE.ROCK, Globals.SPECIAL_TERRAIN_TYPE.ROCK))
+				$HUD.add_child(rock_tile)
+				rock_tile.global_position = _boss_image.global_position
+				await _add_tile_to_deck(rock_tile, true)
+	
 	_waiting = false
 	_draw_tile()
 	# Check for end of island
@@ -439,11 +470,6 @@ func _on_deck_clicked():
 	#_deck_button.visible = false
 	_viewing_deck = true
 
-func _on_deck_viewer_closed():
-	_deck_viewer.visible = false
-	_viewing_deck = false
-	#_deck_button.visible = true
-
 func _on_summary_closed():
 	%SummaryPanel.visible = false
 	if _score >= _run.required_score:
@@ -458,12 +484,17 @@ func _on_summary_closed():
 
 func _on_shop_item_button_pressed(shop_item: Node, item: Control) -> void:
 	if _money >= shop_item.cost:
-		_money -= shop_item.cost
-		if item is TileControl:
-			_add_tile_to_deck(item)
+		if item.data is ItemData and item.data.name == "Fire":
+			_viewing_deck = true
+			_instant_item_in_use = shop_item
+			_deck_viewer.open_in_selection_mode(_deck_viewer.SELECTION_TYPE.REMOVE_TILE)
 		else:
-			_add_item_from_shop(item)
-		shop_item.set_empty()
+			_money -= shop_item.cost
+			if item is TileControl:
+				_add_tile_to_deck(item)
+			else:
+				_add_item_from_shop(item)
+			shop_item.set_empty()
 
 func _on_shop_button_refresh_pressed() -> void:
 	if _money >= _run.refresh_cost:
@@ -474,3 +505,30 @@ func _on_shop_button_continue_pressed() -> void:
 	_slide_in_panel.visible = false
 	_labels.score_text.set_text("Score")
 	_next_island()
+
+
+func _on_deck_viewer_closed():
+	_deck_viewer.visible = false
+	_viewing_deck = false
+
+
+func _on_deck_viewer_selecting_cancelled() -> void:
+	_instant_item_in_use = null
+	_on_deck_viewer_closed()
+
+
+func _on_deck_viewer_tile_removed() -> void:
+	_money -= _instant_item_in_use.cost
+	_instant_item_in_use.set_empty()
+	_instant_item_in_use.item.queue_free()
+	_instant_item_in_use = null
+	_on_deck_viewer_closed()
+	_update_deck_size()
+
+
+func _on_boss_mouse_entered() -> void:
+	_boss_info.show()
+
+
+func _on_boss_mouse_exited() -> void:
+	_boss_info.hide()

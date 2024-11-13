@@ -2,31 +2,37 @@ extends Resource
 class_name RunData
 
 static var DECK_TYPE = {
-	#default = [
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.FOREST1),
-	#] as Array[TileData_],
 	default = [
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS),
-		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.WATER),
-		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Duck")),
-		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Duck")),
-		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Duck")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Kangaroo")),
-		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Mouse")),
-		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Mouse")),
-		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Mouse")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Hummingbird"), Globals.get_animal("Hummingbird")),
+		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Hummingbird"), Globals.get_animal("Hummingbird")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Hummingbird"), Globals.get_animal("Hummingbird")),
+		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Crocodile")),
+		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Crocodile")),
+		TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Crocodile")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Kingsnake")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Kingsnake")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Kingsnake")),
+		TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("King Cobra")),
+		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("King Cobra")),
+		TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("King Cobra")),
 	] as Array[TileData_],
+	#default = [
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS),
+		#TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER),
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.WATER),
+		#TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.WATER, Globals.get_animal("Duck")),
+		#TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Duck")),
+		#TileData_.new(Globals.TERRAIN_TYPE.WATER, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Duck")),
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Kangaroo")),
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Kangaroo")),
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.JUNGLE, Globals.get_animal("Kangaroo")),
+		#TileData_.new(Globals.TERRAIN_TYPE.GRASS, Globals.TERRAIN_TYPE.FOREST1, Globals.get_animal("Mouse")),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.GRASS, Globals.get_animal("Mouse")),
+		#TileData_.new(Globals.TERRAIN_TYPE.FOREST1, Globals.TERRAIN_TYPE.DESERT, Globals.get_animal("Mouse")),
+	#] as Array[TileData_],
 }
+
+static var BOSSES: Array[String] = ["Volcano"]
 
 var deck : Array[TileData_]
 var items : Array[ItemData]
@@ -34,6 +40,8 @@ var island : int
 var hand_size : int
 var refresh_cost : int
 var required_score : int
+var current_boss : String
+var _remaining_bosses : Array[String]
 var item_costs : Array[int]
 var _animal_rarity_weights : Array[int]
 var _item_rarity_weights : Array[int]
@@ -50,9 +58,10 @@ func _init(deck_: String):
 		#Items.get_item("Money Tree"),
 		#Items.get_item("Grass"),
 	]
-	island = 0
+	island = 4
 	hand_size = 3
 	refresh_cost = 5
+	_remaining_bosses = BOSSES.duplicate()
 	_animal_rarity_weights = [50, 12, 4, 1]
 	update_animal_rarity_weights()
 	_item_rarity_weights = [50, 12, 4, 1]
@@ -63,6 +72,13 @@ func next_island() -> void:
 	island += 1
 	required_score = 14 + island * 2
 	#required_score = 1
+	if island % 5 == 0:
+		if _remaining_bosses.is_empty():
+			_remaining_bosses = BOSSES.duplicate()
+		current_boss = BOSSES.pick_random()
+		_remaining_bosses.erase(current_boss)
+	else:
+		current_boss = ""
 
 func get_random_tile(max_animals: int = 2) -> Dictionary:
 	var cost = 2
@@ -96,7 +112,14 @@ func get_random_animal(terrain: int = -1, category: int = -1) -> Animal:
 	return arr.pick_random()
 
 func get_random_item() -> Dictionary:
-	var item = _items_weighted.pick_random().get_script().new(-1)
+	var item: ItemData
+	# If player already has all items, returns a random duplicate
+	if _items_weighted.is_empty():
+		update_item_rarity_weights()
+		item = _items_weighted.pick_random().get_script().new(-1)
+		_items_weighted.clear()
+	else:
+		item = _items_weighted.pick_random().get_script().new(-1)
 	return {
 		item = item,
 		cost = item_costs[item.rarity],

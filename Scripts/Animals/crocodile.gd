@@ -22,4 +22,4 @@ func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatT
 			for i in range(2):
 				if tile2.preview_animals[i]:
 					animals += 1
-	changes.add_tile(TileChange.new(tile, animal_idx, highest))
+	changes.add_tile(TileChange.new(tile, animal_idx, highest * 3 - tile.animal_score[animal_idx]))

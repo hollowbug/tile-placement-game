@@ -5,6 +5,7 @@ var data : TileData_
 
 @onready var _tile := $Tile
 @onready var _tile_info := %TileInfo
+@onready var _highlight := %Selected
 @onready var _SPRITES = {
 	side1 = $Tile/Side1,
 	side1Animal = $"Tile/Side1/Animal",
@@ -45,3 +46,11 @@ func _on_mouse_entered() -> void:
 func _on_mouse_exited() -> void:
 	super()
 	_tile_info.modulate.a = 0
+
+
+func _on_control_selected() -> void:
+	_highlight.show()
+
+
+func _on_control_unselected() -> void:
+	_highlight.hide()
