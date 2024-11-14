@@ -78,9 +78,9 @@ func _ready():
 		else:
 			print("Error creating starting item")
 	_run.next_island()
-	#_next_island()
-	_money = 250
-	_enter_shop()
+	_next_island()
+	#_money = 250
+	#_enter_shop()
 
 func _next_island() -> void:
 	_score = 0
@@ -253,6 +253,8 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 		_run.deck.push_back(tile.data)
 	if _state == "island":
 		_deck.append(tile.data)
+		var idx = randi() % _shuffled_deck.size()
+		_shuffled_deck.insert(idx, tile.data)
 	_deck_viewer.add_tile(tile.data)
 	var pos = tile.global_position
 	tile.get_parent().remove_child(tile)
@@ -260,8 +262,8 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	tile.global_position = pos
 	tile.z_index = 50
 	var tween = create_tween().set_parallel()
-	tween.tween_property(tile, "global_position", _deck_button.global_position, 0.1)
-	tween.tween_property(tile, "scale", Vector2(), 0.1)
+	tween.tween_property(tile, "global_position", _deck_button.global_position, 0.3)
+	tween.tween_property(tile, "scale", Vector2(), 0.3)
 	await tween.finished
 	tile.queue_free()
 	_update_deck_size()

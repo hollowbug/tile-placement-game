@@ -125,7 +125,7 @@ var ANIMAL_CATEGORY = {
 var BOSS = {
 	Volcano = {
 		sprite = preload("res://Sprites/boss_volcano.png"),
-		description = format_string("Adds a temporary <terrain={0}> tile to your deck"
+		description = format_string("Shuffles a temporary <terrain={0}> tile into your deck"
 				.format([SPECIAL_TERRAIN_TYPE.ROCK])
 				+ " whenever you place a tile next to the Volcano"),
 	}
