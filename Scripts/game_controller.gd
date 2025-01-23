@@ -108,7 +108,7 @@ func _next_island() -> void:
 		var num_starting_tiles = randi_range(2, 5)
 		for i in range(num_starting_tiles):
 			starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(3, starting_tiles)
+	_hex_grid.create_island(10, starting_tiles)
 	
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []

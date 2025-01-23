@@ -72,8 +72,8 @@ func _init(deck_: String):
 
 func next_island() -> void:
 	island += 1
-	#required_score = 14 + island * 2
-	required_score = 1
+	required_score = 14 + island * 2
+	#required_score = 1
 	if island % 5 == 0:
 		if _remaining_bosses.is_empty():
 			_remaining_bosses = BOSSES.duplicate()
