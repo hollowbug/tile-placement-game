@@ -15,7 +15,7 @@ func _ready():
 		})
 
 # This is needed to counteract Godot's shenanigans
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	position.y = bottom - size.y
 	size = Vector2()
 

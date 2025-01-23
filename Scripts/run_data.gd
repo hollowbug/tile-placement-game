@@ -49,6 +49,7 @@ var _animals_weighted : Array[Animal]
 #var _animals_weighted : Dictionary
 var _items_weighted : Array[ItemData]
 
+
 func _init(deck_: String):
 	deck = []
 	for tile in DECK_TYPE[deck_]:
@@ -68,10 +69,11 @@ func _init(deck_: String):
 	update_item_rarity_weights()
 	item_costs = [10, 20, 30, 50]
 
+
 func next_island() -> void:
 	island += 1
-	required_score = 14 + island * 2
-	#required_score = 1
+	#required_score = 14 + island * 2
+	required_score = 1
 	if island % 5 == 0:
 		if _remaining_bosses.is_empty():
 			_remaining_bosses = BOSSES.duplicate()
@@ -79,6 +81,7 @@ func next_island() -> void:
 		_remaining_bosses.erase(current_boss)
 	else:
 		current_boss = ""
+
 
 func get_random_tile(max_animals: int = 2) -> Dictionary:
 	var cost = 2
@@ -103,6 +106,7 @@ func get_random_tile(max_animals: int = 2) -> Dictionary:
 		cost = cost
 	}
 
+
 func get_random_animal(terrain: int = -1, category: int = -1) -> Animal:
 	var arr = _animals_weighted
 	if terrain != -1:
@@ -110,6 +114,7 @@ func get_random_animal(terrain: int = -1, category: int = -1) -> Animal:
 	if category != -1:
 		arr = arr.filter(func(a): return category in a.categories)
 	return arr.pick_random()
+
 
 func get_random_item() -> Dictionary:
 	var item: ItemData
@@ -124,6 +129,7 @@ func get_random_item() -> Dictionary:
 		item = item,
 		cost = item_costs[item.rarity],
 	}
+
 
 func get_shop_items() -> Array[Dictionary]:
 	# Returns 3 different random items that the player doesn't have yet
@@ -140,11 +146,13 @@ func get_shop_items() -> Array[Dictionary]:
 		})
 	return result
 
+
 func add_item(item: ItemData) -> void:
 	items.append(item)
 	# When an item is gained, it's removed from the array
 	# # so the player can't get multiple copies of an item
 	_items_weighted = _items_weighted.filter(func(i): return i.name != item.name)
+
 
 func update_animal_rarity_weights() -> void:
 	#_animals_weighted = {}
@@ -158,6 +166,7 @@ func update_animal_rarity_weights() -> void:
 			#for i in range(_animal_rarity_weights[animal.rarity]):
 				#arr.append(animal)
 		#_animals_weighted[terrain] = arr
+
 
 func update_item_rarity_weights() -> void:
 	_items_weighted = []

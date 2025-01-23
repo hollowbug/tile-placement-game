@@ -27,11 +27,11 @@ func get_category_string() -> String:
 func has_category(category: int) -> bool:
 	return category in categories
 
-func placement_preview(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func placement_preview(_changes: Changes, _tile: HabitatTile, _placed_tile: HabitatTile, _animal_idx: int) -> void:
 	pass
 
-func calculate_score(changes: Changes, tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func calculate_score(_changes: Changes, _tile: HabitatTile, _placed_tile: HabitatTile, _animal_idx: int) -> void:
 	pass
 
-func on_tile_placed(tile: HabitatTile, placed_tile: HabitatTile, animal_idx: int) -> void:
+func on_tile_placed(_tile: HabitatTile, _placed_tile: HabitatTile, _animal_idx: int) -> void:
 	pass

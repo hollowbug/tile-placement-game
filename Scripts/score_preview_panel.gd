@@ -3,7 +3,7 @@ extends KeepXCentered
 const _FADE_IN_DURATION := 0.2
 const _FADE_OUT_DURATION := 0.2
 
-func _process(delta: float) -> void:
+func _process(_delta: float) -> void:
 	size.y = 0
 
 @onready var labels = [

@@ -3,7 +3,7 @@ class_name TileControl
 
 var data : TileData_
 
-@onready var _tile := $Tile
+#@onready var _tile := $Tile
 @onready var _tile_info := %TileInfo
 @onready var _highlight := %Selected
 @onready var _SPRITES = {

@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://b22t40lyxj0ku"]
+[gd_scene load_steps=25 format=3 uid="uid://b22t40lyxj0ku"]
 
 [ext_resource type="Script" path="res://Scripts/game_controller.gd" id="1_bnu0l"]
 [ext_resource type="Script" path="res://Scripts/hex_grid.gd" id="1_ng7jk"]
@@ -18,6 +18,8 @@
 [ext_resource type="StyleBox" uid="uid://b73ix34l0wxtl" path="res://Resources/style_box_black.tres" id="11_uivwr"]
 [ext_resource type="PackedScene" uid="uid://b88e1l6d8ovwe" path="res://Scenes/shop.tscn" id="12_5lv3s"]
 [ext_resource type="FontFile" uid="uid://bwkca31k63u50" path="res://Resources/Agdasima-Regular.ttf" id="13_xnq6a"]
+[ext_resource type="Script" path="res://Scripts/slide_in_panel.gd" id="16_vj0re"]
+[ext_resource type="PackedScene" uid="uid://cu46a2xri4cli" path="res://Scenes/shop_container.tscn" id="17_anrjk"]
 
 [sub_resource type="Environment" id="Environment_oi4er"]
 background_mode = 1
@@ -326,6 +328,54 @@ layout_mode = 2
 size_flags_horizontal = 3
 text = "Continue"
 
+[node name="RewardPanel" type="PanelContainer" parent="HUD"]
+unique_name_in_owner = true
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -16.0
+offset_top = -16.0
+offset_right = 16.0
+offset_bottom = 16.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("16_vj0re")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="HUD/RewardPanel"]
+layout_mode = 2
+
+[node name="RewardLabel" type="Label" parent="HUD/RewardPanel/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_font_sizes/font_size = 54
+text = "Choose a reward"
+horizontal_alignment = 1
+
+[node name="RewardContainer" parent="HUD/RewardPanel/VBoxContainer" instance=ExtResource("17_anrjk")]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(600, 0)
+layout_mode = 2
+
+[node name="HBoxContainer" type="HBoxContainer" parent="HUD/RewardPanel/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 40
+alignment = 1
+
+[node name="Button2" type="Button" parent="HUD/RewardPanel/VBoxContainer/HBoxContainer"]
+modulate = Color(1, 0.164706, 0, 1)
+layout_mode = 2
+focus_mode = 0
+text = "Skip"
+
+[node name="ButtonConfirmReward" type="Button" parent="HUD/RewardPanel/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+focus_mode = 0
+disabled = true
+text = "Confirm"
+
 [node name="Deck" type="Control" parent="HUD"]
 unique_name_in_owner = true
 layout_mode = 3
@@ -511,6 +561,8 @@ label_settings = SubResource("LabelSettings_8vtgb")
 [connection signal="mouse_entered" from="HUD/Boss" to="." method="_on_boss_mouse_entered"]
 [connection signal="mouse_exited" from="HUD/Boss" to="." method="_on_boss_mouse_exited"]
 [connection signal="pressed" from="HUD/SummaryPanel/VBoxContainer/HBoxContainer/Button" to="." method="_on_summary_closed"]
+[connection signal="pressed" from="HUD/RewardPanel/VBoxContainer/HBoxContainer/Button2" to="." method="_on_tile_reward_skip_pressed"]
+[connection signal="pressed" from="HUD/RewardPanel/VBoxContainer/HBoxContainer/ButtonConfirmReward" to="." method="_on_tile_reward_confirm_pressed"]
 [connection signal="control_clicked" from="HUD/Deck" to="." method="_on_deck_clicked"]
 [connection signal="closed" from="HUD/DeckViewer" to="." method="_on_deck_viewer_closed"]
 [connection signal="selecting_cancelled" from="HUD/DeckViewer" to="." method="_on_deck_viewer_selecting_cancelled"]

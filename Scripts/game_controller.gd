@@ -36,6 +36,7 @@ var _items : Array[Item]
 var _hand_tiles : Array[TileControl] = []
 var _hovered_hand_tile : TileControl
 var _selected_hand_tile : TileControl
+var _selected_reward_tile : TileControl
 var _shop_tiles : Array[Control]
 var _shop_items : Array[Control]
 
@@ -48,9 +49,9 @@ var _shop_items : Array[Control]
 @onready var _deck_viewer := %DeckViewer
 @onready var _money_node := %Money
 @onready var _item_container := %Items
-@onready var _slide_in_panel := %SlideInPanel
 @onready var _boss_image := %Boss
 @onready var _boss_info := %BossInfo
+@onready var _reward_container := %RewardContainer/%FlowContainer
 @onready var _labels := {
 	island = %LabelIsland,
 	score_text = %LabelScoreText,
@@ -68,7 +69,11 @@ var _shop_items : Array[Control]
 	refresh = %Shop/%ButtonRefresh
 }
 
+
 func _ready():
+	%SlideInPanel.hide()
+	%SummaryPanel.hide()
+	%RewardPanel.hide()
 	%Shop/%ButtonRefresh.pressed.connect(_on_shop_button_refresh_pressed)
 	%Shop/%ButtonContinue.pressed.connect(_on_shop_button_continue_pressed)
 	_run = RunData.new("default")
@@ -81,6 +86,7 @@ func _ready():
 	_next_island()
 	#_money = 250
 	#_enter_shop()
+
 
 func _next_island() -> void:
 	_score = 0
@@ -102,7 +108,7 @@ func _next_island() -> void:
 		var num_starting_tiles = randi_range(2, 5)
 		for i in range(num_starting_tiles):
 			starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(10, starting_tiles)
+	_hex_grid.create_island(3, starting_tiles)
 	
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
@@ -161,9 +167,11 @@ func _draw_tile() -> void:
 	tween.tween_property(tile, "scale", Vector2.ONE, 0.3)
 	_update_deck_size()
 
+
 func _unselect_tile() -> void:
 	_selected_hand_tile = null
 	_hex_grid.set_current_tile(null)
+
 
 func _show_score_preview(changes: Changes) -> void:
 	_score_preview.visible = true
@@ -190,8 +198,6 @@ func _update_deck_size() -> void:
 
 func _enter_shop() -> void:
 	_state = "shop"
-	_update_deck_size()
-	_deck_viewer.set_deck(_run.deck)
 	_shop_nodes.shop.visible = true
 	_refresh_shop()
 	var item_changes = Changes.new()
@@ -201,8 +207,9 @@ func _enter_shop() -> void:
 		_money += item.money_change
 		item.item.pop_effect()
 		await get_tree().create_timer(0.5).timeout
-	await _slide_in_panel.slide_in()
+	await %SlideInPanel.slide_in()
 	_waiting = false
+
 
 func _refresh_shop() -> void:
 	# Tiles
@@ -241,11 +248,13 @@ func _refresh_shop() -> void:
 	
 	_update_buy_buttons()
 
+
 #func _randomize_tile_options() -> void:
 	#_hand_tiles_data = []
 	#for tile in _hand_tiles_data:
 		#var data = TileData_.random(2)
 		#tile.set_data(data)
+
 
 func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	_deck.push_back(tile.data)
@@ -261,6 +270,7 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	_canvas_layer.add_child(tile)
 	tile.global_position = pos
 	tile.z_index = 50
+	tile.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	var tween = create_tween().set_parallel()
 	tween.tween_property(tile, "global_position", _deck_button.global_position, 0.3)
 	tween.tween_property(tile, "scale", Vector2(), 0.3)
@@ -269,6 +279,7 @@ func _add_tile_to_deck(tile: TileControl, temporary: bool = false) -> void:
 	_update_deck_size()
 	_deck_button.pop_effect()
 
+
 func _add_item(item: ItemData) -> void:
 	var node = _ITEM.instantiate()
 	_item_container.add_child(node)
@@ -276,9 +287,11 @@ func _add_item(item: ItemData) -> void:
 	_items.append(node)
 	_run.add_item(item)
 
-func _add_item_from_shop(item: Item) -> void:
+
+func _add_item_from_screen(item: Item) -> void:
 	_items.append(item)
 	_run.add_item(item.data)
+	# Replace item with a placeholder that keeps the space occupied
 	var placeholder = _ITEM.instantiate()
 	placeholder.modulate.a = 0
 	_item_container.add_child(placeholder)
@@ -297,6 +310,7 @@ func _add_item_from_shop(item: Item) -> void:
 	_canvas_layer.remove_child(item)
 	_item_container.add_child(item)
 	item.global_position = pos
+
 
 func _display_summary() -> void:
 	var container = %SummaryPanel/VBoxContainer
@@ -334,6 +348,57 @@ func _display_summary() -> void:
 		%SummaryPanel.slide_in()
 		container.get_node("Title").set_text("Game Over")
 		container.get_node("Rewards").visible = false
+
+
+func _display_rewards() -> void:
+	if _run.current_boss == "" or _state == "choosing_boss_reward":
+		if _run.current_boss == "":
+			%RewardPanel.slide_in()
+		else:
+			%RewardLabel.text = "Choose a reward"
+			%ButtonConfirmReward.text = "Confirm"
+		# Choose 1 of 3 tiles as reward
+		_state = "choosing_reward"
+		%ButtonConfirmReward.disabled = true
+		_update_deck_size()
+		_deck_viewer.set_deck(_run.deck)
+		for i in range(3):
+			var tile = _TILE_CONTROL.instantiate()
+			var random = _run.get_random_tile()
+			_reward_container.add_child(tile)
+			tile.set_data(random.tile)
+			tile.control_selected.connect(_on_reward_tile_selected.bind(tile))
+			tile.control_unselected.connect(_on_reward_tile_unselected.bind(tile))
+	else:
+		_state = "choosing_boss_reward"
+		%RewardLabel.text = "Boss reward"
+		%ButtonConfirmReward.disabled = false
+		%ButtonConfirmReward.text = "Take"
+		var item = _run.get_random_item()
+		if !item:
+			_display_rewards()
+			return
+		var node = _ITEM.instantiate()
+		_reward_container.add_child(node)
+		node.set_data(item.item)
+		%RewardPanel.slide_in()
+
+
+func _close_tile_reward_panel() -> void:
+	for node in _reward_container.get_children():
+		node.queue_free()
+	if _state == "choosing_boss_reward":
+		# After boss reward, choose a tile reward
+		_display_rewards()
+		return
+	%RewardPanel.visible = false
+	_state = "shop"
+	_run.next_island()
+	_labels.island.set_text("Island " + str(_run.island))
+	_labels.score_text.set_text("Required score:")
+	_labels.score.set_text(str(_run.required_score))
+	_enter_shop()
+
 
 func _update_buy_buttons() -> void:
 	for item in _shop_tiles + _shop_items:
@@ -476,13 +541,37 @@ func _on_summary_closed():
 	%SummaryPanel.visible = false
 	if _score >= _run.required_score:
 		_money += _money_earned
-		_run.next_island()
-		_labels.island.set_text("Island " + str(_run.island))
-		_labels.score_text.set_text("Required score:")
-		_labels.score.set_text(str(_run.required_score))
-		_enter_shop()
+		_display_rewards()
 	else:
 		get_tree().reload_current_scene()
+
+
+func _on_tile_reward_skip_pressed() -> void:
+	_close_tile_reward_panel()
+
+
+func _on_tile_reward_confirm_pressed() -> void:
+	if _state == "choosing_boss_reward":
+		var item = _reward_container.get_child(0)
+		_add_item_from_screen(item)
+	else:
+		_add_tile_to_deck(_selected_reward_tile)
+	_close_tile_reward_panel()
+
+
+func _on_reward_tile_selected(tile : TileControl) -> void:
+	_selected_reward_tile = tile
+	%ButtonConfirmReward.disabled = false
+	for tile2 in _reward_container.get_children():
+		if tile != tile2:
+			tile2.unselect()
+
+
+func _on_reward_tile_unselected(tile: TileControl) -> void:
+	if _selected_reward_tile == tile:
+		_selected_reward_tile = null
+		%ButtonConfirmReward.disabled = true
+
 
 func _on_shop_item_button_pressed(shop_item: Node, item: Control) -> void:
 	if _money >= shop_item.cost:
@@ -495,16 +584,18 @@ func _on_shop_item_button_pressed(shop_item: Node, item: Control) -> void:
 			if item is TileControl:
 				_add_tile_to_deck(item)
 			else:
-				_add_item_from_shop(item)
+				_add_item_from_screen(item)
 			shop_item.set_empty()
+
 
 func _on_shop_button_refresh_pressed() -> void:
 	if _money >= _run.refresh_cost:
 		_refresh_shop()
 		_money -= _run.refresh_cost
 
+
 func _on_shop_button_continue_pressed() -> void:
-	_slide_in_panel.visible = false
+	%SlideInPanel.visible = false
 	_labels.score_text.set_text("Score")
 	_next_island()
 

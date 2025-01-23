@@ -31,6 +31,10 @@ func _unhandled_input(event) -> void:
 		# Maybe display selected tile at mouse position
 		# when not hovering an emtpy slot?
 		pass
+	elif event is InputEventKey and event.keycode == KEY_Q and event.pressed:
+			_rotate_current_tile(5)
+	elif event is InputEventKey and event.keycode == KEY_E and event.pressed:
+			_rotate_current_tile(1)
 	
 ###
 # PUBLIC FUNCTIONS
@@ -193,10 +197,10 @@ func get_tiles_in_range(tile: Tile, range_: int,
 func get_tiles_in_direction(tile: Tile, direction: int, stop_at_empty: bool = false,
 		include_empty_cells: bool = false) -> Array[Tile]:
 	var result: Array[Tile] = []
-	var position = tile.coordinates
+	var pos = tile.coordinates
 	while true:
-		position = _axial_neighbor(position, direction)
-		var tile2 = get_cell(position)
+		pos = _axial_neighbor(pos, direction)
+		var tile2 = get_cell(pos)
 		if !tile2:
 			break
 		if !tile2.is_empty_slot or include_empty_cells:
@@ -247,12 +251,13 @@ func _place_tile(object : Tile) -> void:
 		num_empty_cells -= 1
 
 func _rotate_current_tile(steps_cw: int):
-	if _hovered_available_cell and _current_tile:
+	if _current_tile:
 		_current_tile.rotate_tile(steps_cw)
-		_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _hovered_available_cell
-		_clear_preview()
-		_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _current_tile
-		_preview_tile_placement(_hovered_available_cell, _current_tile)
+		if _hovered_available_cell:
+			_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _hovered_available_cell
+			_clear_preview()
+			_grid[_current_tile.coordinates.x][_current_tile.coordinates.y] = _current_tile
+			_preview_tile_placement(_hovered_available_cell, _current_tile)
 
 func _preview_tile_placement(empty_slot: Tile, tile: HabitatTile) -> void:
 	tile.position = empty_slot.position

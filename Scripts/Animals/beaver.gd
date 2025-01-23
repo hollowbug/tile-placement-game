@@ -12,23 +12,22 @@ func _init():
 			.format([Globals.ANIMAL_TYPE.RODENT]))
 	
 func calculate_score(changes: Changes, tile: HabitatTile, _placed_tile: HabitatTile, animal_idx: int) -> void:
-		var points = 0
+	var points = 0
+	
+	# Check other animal on this tile
+	var other = tile.preview_animals[int(!bool(animal_idx))]
+	if other and other.name == name:
+		points += 1
 		
-		# Check other animal on this tile
-		var other = tile.preview_animals[int(!bool(animal_idx))]
-		if other and other.name == name:
-			points += 1
-			
-		# Check each direction
-		for dir in range(6):
-			for tile2 in tile.get_tiles_in_direction(dir, true):
-				var rodent = false
-				for i in range(2):
-					var animal = tile2.preview_animals[i]
-					if animal and animal.has_category(Globals.ANIMAL_TYPE.RODENT):
-						points += 1
-						rodent = true
-				if !rodent:
-					break
-		changes.add_tile(TileChange.new(tile, animal_idx, points - tile.animal_score[animal_idx]))
-
+	# Check each direction
+	for dir in range(6):
+		for tile2 in tile.get_tiles_in_direction(dir, true):
+			var rodent = false
+			for i in range(2):
+				var animal = tile2.preview_animals[i]
+				if animal and animal.has_category(Globals.ANIMAL_TYPE.RODENT):
+					points += 1
+					rodent = true
+			if !rodent:
+				break
+	changes.add_tile(TileChange.new(tile, animal_idx, points - tile.animal_score[animal_idx]))

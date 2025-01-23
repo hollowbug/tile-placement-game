@@ -2,7 +2,6 @@ extends ClickableControl
 class_name Item
 
 var data : ItemData
-var _animal_panel = []
 
 @onready var _popup := %Popup
 @onready var _description := %Description

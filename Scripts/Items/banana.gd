@@ -22,7 +22,7 @@ func on_island_started(item: Item, hex_grid: HexGrid, change: Changes) -> void:
 func on_placement_previewed(item: Item, tile: HabitatTile, change: Changes) -> void:
 	_score(item, tile.hex_grid, change)
 
-func on_tile_placed(item: Item, tile: HabitatTile, change: Changes) -> void:
+func on_tile_placed(_item: Item, _tile: HabitatTile, _change: Changes) -> void:
 	_jungles = _preview_jungles
 
 func _score(item: Item, hex_grid: HexGrid, change: Changes) -> void:

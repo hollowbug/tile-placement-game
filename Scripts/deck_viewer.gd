@@ -33,6 +33,7 @@ var _selected_tile : TileControl
 @onready var _label_remove_tile = %LabelRemoveTile
 @onready var _label_add_animal = %LabelAddRandomAnimal
 
+
 func set_deck(deck : Array[TileData_]) -> void:
 	_full_deck = deck
 	for tile in _tiles:
@@ -43,6 +44,7 @@ func set_deck(deck : Array[TileData_]) -> void:
 		#for i in range(10):
 			add_tile(data)
 
+
 func update_remaining_tiles(remaining_deck: Array[TileData_]) -> void:
 	_used_tiles = []
 	_remaining_deck = remaining_deck
@@ -51,6 +53,7 @@ func update_remaining_tiles(remaining_deck: Array[TileData_]) -> void:
 			_used_tiles.append(tile)
 	if mode == "Remaining":
 		_update()
+
 
 func add_tile(data: TileData_) -> TileControl:
 	var tile = _TILE_CONTROL.instantiate()
@@ -61,6 +64,7 @@ func add_tile(data: TileData_) -> TileControl:
 	tile.control_selected.connect(_on_tile_selected.bind(tile))
 	tile.control_unselected.connect(_on_tile_unselected.bind(tile))
 	return tile
+
 
 func open_in_selection_mode(selection_type: SELECTION_TYPE) -> void:
 	show()
@@ -73,6 +77,7 @@ func open_in_selection_mode(selection_type: SELECTION_TYPE) -> void:
 	for tile in _tiles:
 		tile.selectable = true
 
+
 func _end_selection_mode() -> void:
 	_selection_mode = -1
 	_selected_tile = null
@@ -82,6 +87,7 @@ func _end_selection_mode() -> void:
 	for tile in _tiles:
 		tile.unselect()
 		tile.selectable = false
+
 
 func _update() -> void:
 	if !island_mode or mode == "All":
@@ -100,6 +106,7 @@ func _update() -> void:
 			_tile_container.move_child(tile, i)
 			i += 1
 
+
 func _on_button_remaining_toggled(toggled_on) -> void:
 	if toggled_on:
 		_button_all.button_pressed = false
@@ -107,12 +114,14 @@ func _on_button_remaining_toggled(toggled_on) -> void:
 	elif not _button_all.button_pressed:
 		_button_remaining.button_pressed = true
 
+
 func _on_button_all_toggled(toggled_on) -> void:
 	if toggled_on:
 		_button_remaining.button_pressed = false
 		mode = "All"
 	elif not _button_remaining.button_pressed:
 		_button_all.button_pressed = true
+
 
 func _on_button_close_pressed() -> void:
 	if _selection_mode == -1:
@@ -127,7 +136,7 @@ func _on_button_close_pressed() -> void:
 				_full_deck.erase(tile)
 		_selected_tile.queue_free()
 		_tiles.erase(_selected_tile)
-		tile_removed.emit(_selected_tile.data.id)
+		tile_removed.emit()
 	elif _selection_mode == SELECTION_TYPE.ADD_ANIMAL:
 		pass # to be implemented
 	_end_selection_mode()

@@ -16,7 +16,6 @@ var rotations := 0
 
 var _hovered := false
 var _hover_timer := 0.0
-var _score_tween : Array[Tween] = [null, null]
 var _raise_tween : Array[Tween] = [null, null]
 var _HIGHLIGHTS : Array[Node]
 var _pieces : Array[Node] = []
