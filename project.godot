@@ -27,6 +27,10 @@ window/size/mode=2
 window/stretch/mode="canvas_items"
 window/stretch/aspect="expand"
 
+[editor]
+
+run/main_run_args="--required_score=1 --island_size=1"
+
 [editor_plugins]
 
 enabled=PackedStringArray()
