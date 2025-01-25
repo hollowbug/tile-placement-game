@@ -70,13 +70,13 @@ func _init(deck_: String):
 	item_costs = [10, 20, 30, 50]
 
 
-func next_island(override_required_score: int = -1) -> void:
+func next_island() -> void:
 	island += 1
-	if override_required_score == -1:
+	if Globals.override_required_score == -1:
 		required_score = 14 + island * 2
 	else:
-		required_score = override_required_score
-	if island % 5 == 0:
+		required_score = Globals.override_required_score
+	if island % Globals.boss_frequency == 0:
 		if _remaining_bosses.is_empty():
 			_remaining_bosses = BOSSES.duplicate()
 		current_boss = BOSSES.pick_random()
@@ -120,15 +120,16 @@ func get_random_animal(terrain: int = -1, category: int = -1) -> Animal:
 
 func get_boss_reward_item() -> Dictionary:
 	var item: ItemData
+	# Boss reward cannot be a consumable
 	var arr = _remove_consumables_from_array(_items_weighted.duplicate())
 	# If player already has all items, returns a random duplicate
-	if _items_weighted.is_empty():
+	if arr.is_empty():
 		update_item_rarity_weights()
-		_remove_consumables_from_array(_items_weighted.duplicate())
+		arr = _remove_consumables_from_array(_items_weighted.duplicate())
 		item = arr.pick_random().get_script().new(-1)
 		_items_weighted.clear()
 	else:
-		item = _items_weighted.pick_random().get_script().new(-1)
+		item = arr.pick_random().get_script().new(-1)
 	return {
 		item = item,
 		cost = item_costs[item.rarity],
@@ -180,4 +181,6 @@ func update_item_rarity_weights() -> void:
 
 
 func _remove_consumables_from_array(array: Array[ItemData]) -> Array[ItemData]:
+	print("Before removing consumables:", array.size(), "items")
+	print("After removing consumables:", array.filter(func(x): return x.name != "Fire").size(), "items")
 	return array.filter(func(x): return x.name != "Fire")

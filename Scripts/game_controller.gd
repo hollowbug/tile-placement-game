@@ -23,8 +23,6 @@ var _money := 0:
 		if _state == "shop":
 			_update_buy_buttons()
 
-var _override_required_score := -1
-var _island_size := 10
 var _waiting := false
 var _viewing_deck := false
 var _instant_item_in_use : Control
@@ -73,7 +71,6 @@ var _shop_items : Array[Control]
 
 
 func _ready():
-	_apply_cmdline_args()
 	%SlideInPanel.hide()
 	%SummaryPanel.hide()
 	%RewardPanel.hide()
@@ -85,22 +82,10 @@ func _ready():
 			_add_item(item)
 		else:
 			print("Error creating starting item")
-	_run.next_island(_override_required_score)
+	_run.next_island()
 	_next_island()
 	#_money = 250
 	#_enter_shop()
-
-
-func _apply_cmdline_args() -> void:
-	var args = {}
-	for arg in OS.get_cmdline_args():
-		if arg.count("=") == 1:
-			var key_value = arg.split("=")
-			args[key_value[0].lstrip("--")] = key_value[1]
-	for arg in args:
-		match arg:
-			"required_score": _override_required_score = int(args[arg])
-			"island_size": _island_size = int(args[arg])
 
 
 func _next_island() -> void:
@@ -123,7 +108,7 @@ func _next_island() -> void:
 		var num_starting_tiles = randi_range(2, 5)
 		for i in range(num_starting_tiles):
 			starting_tiles.append(_run.get_random_tile(0).tile)
-	_hex_grid.create_island(_island_size, starting_tiles)
+	_hex_grid.create_island(starting_tiles)
 	
 	# Duplicate run deck so temporary changes can be made to it
 	_deck = []
@@ -409,7 +394,7 @@ func _close_tile_reward_panel() -> void:
 		return
 	%RewardPanel.visible = false
 	_state = "shop"
-	_run.next_island(_override_required_score)
+	_run.next_island()
 	_labels.island.set_text("Island " + str(_run.island))
 	_labels.score_text.set_text("Required score:")
 	_labels.score.set_text(str(_run.required_score))

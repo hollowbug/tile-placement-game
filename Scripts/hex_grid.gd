@@ -56,14 +56,14 @@ func unset_current_tile() -> void:
 		_current_tile.queue_free()
 		_current_tile = null
 
-func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> void:
+func create_island(starting_tiles: Array[TileData_]) -> void:
 	# NOTE: WILL HANG IF EMPTY SLOTS + STARTING TILES IS OVER 15;
 	# NEEDS TO BE ADJUSTED TO ADD ADDITIONAL TILES IN SUITABLE LOCATIONS
-	num_empty_cells = num_empty_slots
+	num_empty_cells = Globals.island_size
 	var rand_order = starting_tiles.duplicate()
 	_grid = {}
 	_base_tiles = []
-	for i in range(num_empty_slots):
+	for i in range(Globals.island_size):
 		rand_order.append(null)
 	rand_order.shuffle()
 	for next_tile in rand_order:
@@ -132,7 +132,8 @@ func create_island(num_empty_slots: int, starting_tiles: Array[TileData_]) -> vo
 		tile.scale.y = max(1, 10 - dist * 2.5)
 	var cam = %CameraFocalPoint
 	if cam:
-		cam.global_translate(Vector3(midpoint.x, 0, midpoint.y))
+		cam.position = Vector3(midpoint.x, 0, midpoint.y)
+
 
 func clear_island() -> void:
 	var duration = 0.5

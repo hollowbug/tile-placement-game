@@ -29,7 +29,7 @@ window/stretch/aspect="expand"
 
 [editor]
 
-run/main_run_args="--required_score=1 --island_size=1"
+run/main_run_args="--required_score=1 --island_size=1 boss_frequency=1"
 
 [editor_plugins]
 

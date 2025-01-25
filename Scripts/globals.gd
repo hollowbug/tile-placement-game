@@ -10,6 +10,10 @@ enum ANIMAL_TYPE {BIRD, HERBIVORE, PREDATOR, REPTILE, RODENT}
 var ANIMAL: Array[Animal] = []
 enum RARITY {COMMON, UNCOMMON, RARE, MYTHICAL}
 
+var override_required_score := -1
+var island_size := 10
+var boss_frequency := 5
+
 var TEXT_COLOR = {
 	"points_gain": "#00ff00",
 	"points_loss": "#ff0000",
@@ -132,6 +136,7 @@ var BOSS = {
 }
 
 func _init():
+	_apply_cmdline_args()
 	var dirname = "res://Scripts/Animals"
 	var animal_files = list_files_in_folder(dirname)
 	for fname in animal_files:
@@ -257,3 +262,16 @@ func list_files_in_folder(folder_path: String) -> Array:
 		print("Failed to open folder: ", folder_path)
 	
 	return files
+
+
+func _apply_cmdline_args() -> void:
+	var args = {}
+	for arg in OS.get_cmdline_args():
+		if arg.count("=") == 1:
+			var key_value = arg.split("=")
+			args[key_value[0].lstrip("--")] = key_value[1]
+	for arg in args:
+		match arg:
+			"required_score": override_required_score = int(args[arg])
+			"island_size": island_size = int(args[arg])
+			"boss_frequency": boss_frequency = int(args[arg])
