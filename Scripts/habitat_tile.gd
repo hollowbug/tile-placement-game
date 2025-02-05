@@ -90,18 +90,29 @@ func set_data(data_: TileData_) -> HabitatTile:
 	for piece in _pieces:
 		piece.queue_free()
 	
-	if is_split:
-		var piece0 = _PIECE_SCENES[data.terrain[0]].half.instantiate()
-		add_child(piece0)
-		_pieces.append(piece0)
-		var piece1 = _PIECE_SCENES[data.terrain[1]].half.instantiate()
-		piece1.rotate_y(PI)
-		add_child(piece1)
-		_pieces.append(piece1)
+	if "half" in _PIECE_SCENES[data.terrain[0]]:
+		for i in range(2):
+			var piece = _PIECE_SCENES[data.terrain[i]].half.instantiate()
+			add_child(piece)
+			_pieces.append(piece)
+		_pieces[1].rotate_y(PI)
 	else:
 		var piece = _PIECE_SCENES[data.terrain[0]].full.instantiate()
 		add_child(piece)
 		_pieces.append(piece)
+	
+	#if is_split:
+		#var piece0 = _PIECE_SCENES[data.terrain[0]].half.instantiate()
+		#add_child(piece0)
+		#_pieces.append(piece0)
+		#var piece1 = _PIECE_SCENES[data.terrain[1]].half.instantiate()
+		#piece1.rotate_y(PI)
+		#add_child(piece1)
+		#_pieces.append(piece1)
+	#else:
+		#var piece = _PIECE_SCENES[data.terrain[0]].full.instantiate()
+		#add_child(piece)
+		#_pieces.append(piece)
 
 	preview_animals = data.animal.duplicate()
 	update_animal(0)
