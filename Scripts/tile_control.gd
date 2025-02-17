@@ -3,8 +3,6 @@ class_name TileControl
 
 var data : TileData_
 
-#@onready var _tile := $Tile
-@onready var _tile_info := %TileInfo
 @onready var _highlight := %Selected
 @onready var _SPRITES = {
 	side1 = $Tile/Side1,
@@ -19,7 +17,6 @@ func set_data(data_: TileData_) -> void:
 	if not is_node_ready():
 		await ready
 	data = data_
-	_tile_info.set_data(data_)
 	_SPRITES.side1.visible = data.terrain[0] != data.terrain[1]
 	_SPRITES.side2.visible = data.terrain[0] != data.terrain[1]
 	_SPRITES.full.visible = data.terrain[0] == data.terrain[1]
@@ -41,11 +38,13 @@ func set_data(data_: TileData_) -> void:
 
 func _on_mouse_entered() -> void:
 	super()
-	_tile_info.modulate.a = 1
+	SignalBus.tile_control_hovered.emit(self)
+	#_tile_info.modulate.a = 1
 
 func _on_mouse_exited() -> void:
 	super()
-	_tile_info.modulate.a = 0
+	SignalBus.tile_control_hover_ended.emit(self)
+	#_tile_info.modulate.a = 0
 
 
 func _on_control_selected() -> void:

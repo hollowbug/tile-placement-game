@@ -1,4 +1,4 @@
-[gd_scene load_steps=25 format=3 uid="uid://b22t40lyxj0ku"]
+[gd_scene load_steps=26 format=3 uid="uid://b22t40lyxj0ku"]
 
 [ext_resource type="Script" path="res://Scripts/game_controller.gd" id="1_bnu0l"]
 [ext_resource type="Script" path="res://Scripts/hex_grid.gd" id="1_ng7jk"]
@@ -20,6 +20,7 @@
 [ext_resource type="FontFile" uid="uid://bwkca31k63u50" path="res://Resources/Agdasima-Regular.ttf" id="13_xnq6a"]
 [ext_resource type="Script" path="res://Scripts/slide_in_panel.gd" id="16_vj0re"]
 [ext_resource type="PackedScene" uid="uid://cu46a2xri4cli" path="res://Scenes/shop_container.tscn" id="17_anrjk"]
+[ext_resource type="PackedScene" uid="uid://dgxmdj3gfdokd" path="res://Scenes/tile_info.tscn" id="21_53kgy"]
 
 [sub_resource type="Environment" id="Environment_oi4er"]
 background_mode = 1
@@ -59,6 +60,7 @@ transform = Transform3D(0.955793, 0.141655, -0.25767, 0, 0.876307, 0.481754, 0.2
 
 [node name="Camera3D" type="Camera3D" parent="CameraFocalPoint"]
 transform = Transform3D(1, 0, 0, 0, 0.85793, 0.513766, 0, -0.513766, 0.85793, 0, 1.99193, 3.00281)
+projection = 1
 current = true
 size = 5.0
 far = 30.0
@@ -554,6 +556,11 @@ size_flags_horizontal = 0
 size_flags_vertical = 8
 text = "Development Build - Contains placeholder art"
 label_settings = SubResource("LabelSettings_8vtgb")
+
+[node name="TileInfo" parent="HUD" instance=ExtResource("21_53kgy")]
+unique_name_in_owner = true
+visible = false
+modulate = Color(1, 1, 1, 1)
 
 [connection signal="score_preview_ended" from="HexGrid" to="." method="_on_hex_grid_score_preview_ended"]
 [connection signal="score_previewed" from="HexGrid" to="." method="_on_hex_grid_score_previewed"]

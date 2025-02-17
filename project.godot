@@ -11,6 +11,7 @@ config_version=5
 [application]
 
 config/name="TilePlacementGame"
+config/version="0.1.1"
 run/main_scene="res://Scenes/main.tscn"
 config/features=PackedStringArray("4.3", "Forward Plus")
 config/icon="res://icon.svg"
@@ -18,6 +19,7 @@ config/icon="res://icon.svg"
 [autoload]
 
 Globals="*res://Scripts/globals.gd"
+SignalBus="*res://Scripts/signal_bus.gd"
 
 [display]
 
@@ -29,7 +31,7 @@ window/stretch/aspect="expand"
 
 [editor]
 
-run/main_run_args="--required_score=1 --island_size=1 boss_frequency=1"
+run/main_run_args="_required_score=1 _island_size=1 boss_frequency=2"
 
 [editor_plugins]
 

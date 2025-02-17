@@ -14,10 +14,12 @@ func _ready():
 			description = get_node("%AnimalPanel" + str(i) + "/%Description"),
 		})
 
+
 # This is needed to counteract Godot's shenanigans
 func _process(_delta: float) -> void:
-	position.y = bottom - size.y
+	#position.y = bottom - size.y
 	size = Vector2()
+
 
 func set_data(data: TileData_) -> void:
 	_label_terrains.set_text("[center]" + data.get_terrain_string())

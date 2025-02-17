@@ -34,17 +34,20 @@ var _deck : Array[TileData_]
 var _shuffled_deck : Array[TileData_]
 var _items : Array[Item]
 var _hand_tiles : Array[TileControl] = []
-var _hovered_hand_tile : TileControl
+#var _hovered_hand_tile : TileControl
 var _selected_hand_tile : TileControl
 var _selected_reward_tile : TileControl
 var _shop_tiles : Array[Control]
 var _shop_items : Array[Control]
+var _tile_info_pos : Vector2 ## Where the TileInfo is supposed to be
 
 @onready var _canvas_layer := $HUD
 @onready var _hex_grid := $HexGrid
+@onready var _camera: Camera3D = $CameraFocalPoint/Camera3D
 #@onready var _island_panel = %IslandPanel
 @onready var _score_preview := %ScorePreview
 @onready var _hand := %HandTiles
+@onready var _tile_info := %TileInfo
 @onready var _deck_button := %Deck
 @onready var _deck_viewer := %DeckViewer
 @onready var _money_node := %Money
@@ -71,11 +74,16 @@ var _shop_items : Array[Control]
 
 
 func _ready():
+	_tile_info.hide()
 	%SlideInPanel.hide()
 	%SummaryPanel.hide()
 	%RewardPanel.hide()
 	%Shop/%ButtonRefresh.pressed.connect(_on_shop_button_refresh_pressed)
 	%Shop/%ButtonContinue.pressed.connect(_on_shop_button_continue_pressed)
+	SignalBus.habitat_tile_hovered.connect(_on_habitat_tile_hovered)
+	SignalBus.habitat_tile_hover_ended.connect(_on_habitat_tile_hover_ended)
+	SignalBus.tile_control_hovered.connect(_on_tile_control_hovered)
+	SignalBus.tile_control_hover_ended.connect(_on_tile_control_hover_ended)
 	_run = RunData.new("default")
 	for item in _run.items:
 		if item:
@@ -86,6 +94,10 @@ func _ready():
 	_next_island()
 	#_money = 250
 	#_enter_shop()
+
+
+func _process(_delta: float) -> void:
+	_tile_info.position = _tile_info_pos
 
 
 func _next_island() -> void:
@@ -158,8 +170,8 @@ func _draw_tile() -> void:
 	tile.position = _deck_button.global_position - _hand.global_position
 	_hand.add_child(tile)
 	_hand_tiles.append(tile)
-	tile.mouse_entered.connect(_on_hand_tile_mouse_entered.bind(tile))
-	tile.mouse_exited.connect(_on_hand_tile_mouse_exited.bind(tile))
+	#tile.mouse_entered.connect(_on_hand_tile_mouse_entered.bind(tile))
+	#tile.mouse_exited.connect(_on_hand_tile_mouse_exited.bind(tile))
 	tile.control_selected.connect(_on_hand_tile_selected.bind(tile))
 	tile.control_unselected.connect(_on_hand_tile_unselected.bind(tile))
 	tile.set_data(_shuffled_deck.pop_front())
@@ -409,12 +421,38 @@ func _update_buy_buttons() -> void:
 	else:
 		_shop_nodes.refresh.modulate = Color.RED
 
-func _on_hand_tile_mouse_entered(tile: TileControl) -> void:
-	_hovered_hand_tile = tile
-	
-func _on_hand_tile_mouse_exited(tile: TileControl) -> void:
-	if _hovered_hand_tile == tile:
-		_hovered_hand_tile = null
+#func _on_hand_tile_mouse_entered(tile: TileControl) -> void:
+	#_hovered_hand_tile = tile
+	#
+#func _on_hand_tile_mouse_exited(tile: TileControl) -> void:
+	#if _hovered_hand_tile == tile:
+		#_hovered_hand_tile = null
+
+
+func _move_tile_info(position: Vector2) -> void:
+	_tile_info.size = Vector2.ZERO
+	_tile_info.show()
+	_tile_info_pos = position - Vector2(_tile_info.size.x / 2, _tile_info.size.y + 20)
+	_tile_info.position = _tile_info_pos
+
+
+func _on_tile_control_hovered(tile: TileControl) -> void:
+	_tile_info.set_data(tile.data)
+	_move_tile_info(tile.global_position + Vector2(tile.size.x / 2, 0))
+
+
+func _on_tile_control_hover_ended(tile: TileControl) -> void:
+	_tile_info.hide()
+
+
+func _on_habitat_tile_hovered(tile: HabitatTile) -> void:
+	_tile_info.set_data(tile.data)
+	_move_tile_info(_camera.unproject_position(tile.global_position))
+
+
+func _on_habitat_tile_hover_ended(tile: HabitatTile) -> void:
+	_tile_info.hide()
+
 
 func _on_hand_tile_selected(tile: TileControl) -> void:
 	if _waiting:

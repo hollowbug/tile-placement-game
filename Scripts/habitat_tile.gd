@@ -52,13 +52,13 @@ static var _PIECE_SCENES = {
 #@onready var COLLIDER_FULL = $ColliderFull
 #@onready var COLLIDER1 = $Collider1
 #@onready var COLLIDER2 = $Collider2
-@onready var _TILE_INFO = $Control/TileInfo
 @onready var ANIMAL_TOKEN = [$AnimalToken0, $AnimalToken1]
 @onready var ANIMAL_ADDED = [$AnimalToken0/AddAnimal, $AnimalToken1/AddAnimal]
 @onready var ANIMAL_REMOVED = [$AnimalToken0/RemoveAnimal, $AnimalToken1/RemoveAnimal]
 @onready var ANIMAL_UI = [$AnimalToken0/AnimalUI, $AnimalToken1/AnimalUI]
 @onready var ANIMAL_SCORE_RECT = [ANIMAL_UI[0].get_node("ScoreRect"), ANIMAL_UI[1].get_node("ScoreRect")]
 @onready var DEBUG_LABEL = $DebugUI/Label
+
 
 func _ready() -> void:
 	scale = Vector3(0.98, 1, 0.98)
@@ -73,17 +73,9 @@ func _ready() -> void:
 		$Highlight6,
 	]
 
-func _process(delta):
-	#DEBUG_LABEL.visible = visible
-	#DEBUG_LABEL.set_text(str(coordinates))
-	if _hovered:
-		_TILE_INFO.modulate.a = min(1.0, _hover_timer / 0.2)
-		_hover_timer += delta
-		#if _hover_timer > 0.2:
 
 func set_data(data_: TileData_) -> HabitatTile:
 	data = data_
-	update_description()
 	edges = [data.terrain[0], data.terrain[0], data.terrain[0], data.terrain[1], data.terrain[1], data.terrain[1]]
 	is_split = data.terrain[0] != data.terrain[1]
 	
@@ -131,8 +123,6 @@ func set_data(data_: TileData_) -> HabitatTile:
 			#edge_nodes.append(node)
 			#add_child(node)
 
-func update_description() -> void:
-	_TILE_INFO.set_data(data)
 
 func get_habitat(terrain: int) -> Array[HabitatTile]:
 	if terrain in preview_habitats:
@@ -232,7 +222,6 @@ func show_animal_preview(preview: TileChange) -> void:
 
 func commit_animal_preview() -> void:
 	data.animal = preview_animals
-	_TILE_INFO.set_data(data)
 	for i in range(2):
 		ANIMAL_SCORE_RECT[i].hide_score()
 		ANIMAL_TOKEN[i].visible = data.animal[i] != null
@@ -269,11 +258,13 @@ func _on_collider_full_mouse_entered() -> void:
 		ignore_hover = false
 	else:
 		_hovered = true
+		SignalBus.habitat_tile_hovered.emit(self)
+
 
 func _on_collider_full_mouse_exited() -> void:
 	_hovered = false
 	_hover_timer = 0
-	_TILE_INFO.modulate.a = 0
+	SignalBus.habitat_tile_hover_ended.emit(self)
 		
 ##############
 # OLD CODE

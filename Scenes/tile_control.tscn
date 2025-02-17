@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://duivsc3qsoy1u"]
+[gd_scene load_steps=9 format=3 uid="uid://duivsc3qsoy1u"]
 
 [ext_resource type="Script" path="res://Scripts/tile_control.gd" id="1_2536e"]
 [ext_resource type="Texture2D" uid="uid://myx8numwe6uw" path="res://Sprites/tile_grass.png" id="2_lrk1e"]
@@ -8,7 +8,6 @@
 [ext_resource type="Texture2D" uid="uid://hbihe01kfvkn" path="res://Sprites/hawk.png" id="4_fd7i0"]
 [ext_resource type="Texture2D" uid="uid://b74rjwhrkog16" path="res://Sprites/tile_grass_full.png" id="5_un06b"]
 [ext_resource type="Texture2D" uid="uid://nnito4uvyesr" path="res://Sprites/chameleon.png" id="6_t53i6"]
-[ext_resource type="PackedScene" uid="uid://dgxmdj3gfdokd" path="res://Scenes/tile_info.tscn" id="8_km85g"]
 
 [node name="TileControl" type="Control"]
 custom_minimum_size = Vector2(180, 154)
@@ -149,21 +148,6 @@ offset_bottom = 50.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("6_t53i6")
-
-[node name="TileInfo" parent="." instance=ExtResource("8_km85g")]
-unique_name_in_owner = true
-layout_mode = 1
-anchors_preset = 7
-anchor_left = 0.5
-anchor_top = 1.0
-anchor_right = 0.5
-anchor_bottom = 1.0
-offset_left = -150.0
-offset_top = -196.0
-offset_right = 150.0
-offset_bottom = -155.0
-grow_horizontal = 2
-grow_vertical = 0
 
 [connection signal="control_selected" from="." to="." method="_on_control_selected"]
 [connection signal="control_unselected" from="." to="." method="_on_control_unselected"]

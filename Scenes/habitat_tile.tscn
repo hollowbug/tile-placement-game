@@ -1,11 +1,10 @@
-[gd_scene load_steps=10 format=3 uid="uid://ckv56n5m4p0yx"]
+[gd_scene load_steps=9 format=3 uid="uid://ckv56n5m4p0yx"]
 
 [ext_resource type="Script" path="res://Scripts/habitat_tile.gd" id="1_jyij7"]
 [ext_resource type="Texture2D" uid="uid://nnito4uvyesr" path="res://Sprites/chameleon.png" id="2_qiuga"]
 [ext_resource type="PackedScene" uid="uid://c1jki5oeny2wu" path="res://Scenes/animal_ui.tscn" id="3_aral8"]
 [ext_resource type="PackedScene" uid="uid://bcf1skxk6vull" path="res://Scenes/animal_token.tscn" id="4_cms7m"]
 [ext_resource type="Script" path="res://Scripts/3d_control.gd" id="4_r1vh5"]
-[ext_resource type="PackedScene" uid="uid://dgxmdj3gfdokd" path="res://Scenes/tile_info.tscn" id="6_3tq2r"]
 
 [sub_resource type="Gradient" id="Gradient_uruqa"]
 colors = PackedColorArray(1, 1, 1, 1, 0, 0, 0, 0)
@@ -103,17 +102,6 @@ visible = false
 
 [node name="AnimalUI" parent="AnimalToken1" instance=ExtResource("3_aral8")]
 scale = Vector2(1, 1)
-
-[node name="Control" type="Control" parent="."]
-layout_mode = 3
-anchors_preset = 0
-mouse_filter = 2
-script = ExtResource("4_r1vh5")
-
-[node name="TileInfo" parent="Control" instance=ExtResource("6_3tq2r")]
-layout_mode = 1
-offset_top = -132.0
-offset_bottom = 0.0
 
 [node name="Area3D" type="Area3D" parent="."]
 
